@@ -1,0 +1,40 @@
+.navbar {
+  background-color: #001528;
+  color: white;
+  padding-left: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+
+.ant-drawer-content,.ant-drawer-header {
+  background-color: #001528 !important;
+
+}
+.ant-drawer-close {
+  color: white !important;
+  font-size: 25px;
+  margin-top: 15px;
+}
+
+.logo-drawer {
+  width: 180px;
+  height: 60px;
+}
+
+@media (min-width: 992px) {
+  .menu {
+    display: none;
+  }
+  .logo {
+    width: 160px;
+    height: 45px;
+  }
+}
+
+@media (max-width: 991px) {
+  .logo {
+    height: 40px;
+    margin-left: 1rem;
+  }
+}
