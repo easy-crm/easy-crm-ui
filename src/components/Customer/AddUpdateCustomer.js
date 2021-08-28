@@ -2,6 +2,7 @@
 import {
   AppstoreTwoTone,
   CreditCardTwoTone,
+  DeleteOutlined,
   FormOutlined,
   IdcardTwoTone,
   InboxOutlined,
@@ -19,6 +20,7 @@ import {
   message,
   Modal,
   Row,
+  Space,
   Spin,
   Tabs,
   Tag,
@@ -71,6 +73,9 @@ function AddUpdateCustomer({
     isLoading: updating,
     isSuccess: isUpdated,
   } = useUpdateCustomer();
+
+  const newNotes = customerInfo.notes.filter((note) => !note._id);
+  const existingNotes = customerInfo.notes.filter((note) => note._id);
 
   const handleLabelChange = (values) => {
     if (values && values.length) {
@@ -167,6 +172,16 @@ function AddUpdateCustomer({
         patchCustomerData(data);
       }
     }
+  };
+
+  const handleDeleteNote = ({ text, addedAt }) => {
+    const updatedAddedNotes = cloneDeep(newNotes).filter(
+      (note) => !(note.text === text && note.addedAt === addedAt)
+    );
+    setCustomerInfo({
+      ...customerInfo,
+      notes: [...updatedAddedNotes, ...existingNotes],
+    });
   };
 
   useEffect(() => {
@@ -293,8 +308,7 @@ function AddUpdateCustomer({
       />
     </>
   );
-  const newNotes = customerInfo.notes.filter((note) => !note._id);
-  const existingNotes = customerInfo.notes.filter((note) => note._id);
+
   return (
     <>
       <Button
@@ -372,12 +386,22 @@ function AddUpdateCustomer({
                     <Divider plain>New Notes</Divider>
                     {newNotes.map((note, index) => (
                       <p key={index + note.text}>
-                        <Tag color="green">
-                          {DateTime.fromISO(note.addedAt, {
-                            zone: 'utc',
-                          }).toFormat(DISPLAY_DATE_FORMAT)}
-                        </Tag>
-                        <em>{note.text}</em>
+                        <Space>
+                          <Tooltip title="Delete Note" placement="right">
+                            <Button
+                              danger
+                              onClick={() => handleDeleteNote(note)}
+                            >
+                              <DeleteOutlined />
+                            </Button>
+                          </Tooltip>
+                          <Tag color="green">
+                            {DateTime.fromISO(note.addedAt, {
+                              zone: 'utc',
+                            }).toFormat(DISPLAY_DATE_FORMAT)}
+                          </Tag>
+                          <em>{note.text}</em>
+                        </Space>
                       </p>
                     ))}
                   </>
