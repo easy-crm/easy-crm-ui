@@ -31,6 +31,24 @@ const registerAxiosErrorInterceptor = () => {
               : 'Application server returned unexpected error!',
           });
         }
+        if (status === 404) {
+          notification.error({
+            duration: 0,
+            message: 'Something went wrong!',
+            description: data.message
+              ? data.message
+              : "Resource you tried to fetch or modify doesn't exist!",
+          });
+        }
+        if (status === 400) {
+          notification.error({
+            duration: 0,
+            message: 'Client Error!',
+            description: data.message
+              ? data.message
+              : "Resource you tried to fetch or modify doesn't exist!",
+          });
+        }
       }
       return Promise.reject(error);
     }

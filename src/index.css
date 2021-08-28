@@ -17,10 +17,15 @@ body {
   padding: 0.5rem;
   max-height: 92vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 .unselectable {
   -webkit-user-select: none; /* Safari */
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* IE10+/Edge */
   user-select: none; /* Standard */
+}
+.ant-input-affix-wrapper .ant-input {
+  padding-left: 25px !important;
+  border-left: solid 1px rgb(235, 232, 232) !important;
 }

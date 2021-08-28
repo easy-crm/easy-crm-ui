@@ -2,7 +2,6 @@ import {
   LoadingOutlined,
   SortAscendingOutlined,
   SortDescendingOutlined,
-  UserAddOutlined,
 } from '@ant-design/icons';
 import {
   Spin,
@@ -13,16 +12,18 @@ import {
   Col,
   Button,
   Select,
-  Tag,
   Tooltip,
   DatePicker,
+  Result,
 } from 'antd';
 import React, { useState } from 'react';
 import moment from 'moment';
 import useCustomers from '../../util/hooks/useCustomers';
-import useConfig from '../../util/hooks/useConfig';
 
 import CustomerList from './CustomerList';
+import AddUpdateCustomer from './AddUpdateCustomer';
+import LabelSelector from './LabelSelector';
+import PlatformSelector from './PlatformSelector';
 
 const dateDisplay = 'MMM DD, YYYY';
 
@@ -41,8 +42,8 @@ function Customer() {
     data: customerData,
     isLoading: loadingCustomers,
     isFetching: fetchingCustomers,
+    refetch,
   } = useCustomers(queryData);
-  const { data: config } = useConfig();
 
   const handlePaginationChange = (page, pageSize) => {
     setQueryData({
@@ -59,13 +60,17 @@ function Customer() {
     });
   };
 
-  const toggleSort = () => {
+  const handleSort = (fieldToSort) => {
     const { sort } = queryData;
     const [field, order] = sort.split('|');
-    if (order === 'ascend') {
-      setQueryData({ ...queryData, sort: `${field}|descend` });
+    if (fieldToSort === field) {
+      if (order === 'ascend') {
+        setQueryData({ ...queryData, sort: `${field}|descend` });
+      } else {
+        setQueryData({ ...queryData, sort: `${field}|ascend` });
+      }
     } else {
-      setQueryData({ ...queryData, sort: `${field}|ascend` });
+      setQueryData({ ...queryData, sort: `${fieldToSort}|ascend` });
     }
   };
 
@@ -81,6 +86,11 @@ function Customer() {
     }
     setAppliedFilters(updated);
     setQueryData(updatedQueryData);
+  };
+
+  const handleCustomerDataChanges = () => {
+    setQueryData({ ...queryData, sort: 'updatedAt|descend' });
+    refetch();
   };
 
   return (
@@ -114,48 +124,36 @@ function Customer() {
             md={4}
             style={{ paddingTop: '10px', textAlign: 'right' }}
           >
-            <Button type="primary">
-              <UserAddOutlined />
-              Add Customer
-            </Button>
+            <AddUpdateCustomer
+              type="ADD"
+              onChange={handleCustomerDataChanges}
+            />
           </Col>
         </Row>
         {customerData ? (
           <>
             <Row>
               <Col xs={24}>
-                <Tooltip title="Sort By Name" placement="right">
-                  <Button onClick={toggleSort}>
-                    {queryData.sort.split('|')[1] === 'ascend' ? (
-                      <SortAscendingOutlined />
-                    ) : (
-                      <SortDescendingOutlined />
-                    )}
-                    Name
-                  </Button>
-                </Tooltip>
-                <Select
-                  mode="multiple"
-                  placeholder="Platforms"
-                  style={{ width: 150 }}
-                  allowClear
+                <LabelSelector
                   onChange={(value) => {
-                    applyFilter('platforms', value ? value.join(',') : null);
+                    applyFilter('labels', value ? value.join(',') : null);
                   }}
+                  value={
+                    appliedFilters.labels
+                      ? appliedFilters.labels.split(',')
+                      : []
+                  }
+                />
+                <PlatformSelector
                   value={
                     appliedFilters.platforms
                       ? appliedFilters.platforms.split(',')
                       : []
                   }
-                >
-                  {config
-                    ? config.platforms.map((platform) => (
-                        <Option key={platform.name} value={platform.name}>
-                          <Tag color={platform.color}>{platform.name}</Tag>
-                        </Option>
-                      ))
-                    : null}
-                </Select>
+                  onChange={(value) => {
+                    applyFilter('platforms', value ? value.join(',') : null);
+                  }}
+                />
                 <Select
                   placeholder="Platform Count"
                   style={{ width: 150 }}
@@ -170,28 +168,6 @@ function Customer() {
                   <Option value="NONE">None</Option>
                 </Select>
 
-                <Select
-                  mode="multiple"
-                  placeholder="Labels"
-                  style={{ width: 150 }}
-                  allowClear
-                  onChange={(value) => {
-                    applyFilter('labels', value ? value.join(',') : null);
-                  }}
-                  value={
-                    appliedFilters.labels
-                      ? appliedFilters.labels.split(',')
-                      : []
-                  }
-                >
-                  {config
-                    ? config.labels.map((label) => (
-                        <Option key={label.text} value={label.text}>
-                          <Tag color={label.color}>{label.text}</Tag>
-                        </Option>
-                      ))
-                    : null}
-                </Select>
                 <DatePicker
                   allowClear
                   value={
@@ -237,36 +213,74 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Last Updated After"
-                  format={(value) =>
-                    `Updated After: ${value.format(dateDisplay)}`
-                  }
+                  placeholder="Updated"
+                  format={(value) => `Updated: ${value.format(dateDisplay)}`}
                 />
               </Col>
             </Row>
             <Row>
               <Col xs={24} md={24}>
-                {customerData.customers.length ? (
-                  <Row justify="end">
-                    <Pagination
-                      size="default"
-                      showTotal={(total, range) =>
-                        `${range[0]}-${range[1]} of ${total} customers`
-                      }
-                      showSizeChanger
-                      pageSizeOptions={[5, 10, 50, 100]}
-                      defaultCurrent={1}
-                      defaultPageSize={customerData.limit}
-                      total={customerData.totalRecords}
-                      onChange={handlePaginationChange}
-                    />
+                {customerData.customers ? (
+                  <Row>
+                    <Col xs={24} md={12}>
+                      <Tooltip title="Sort By Name" placement="right">
+                        <Button onClick={() => handleSort('name')}>
+                          {queryData.sort.includes('name') ? (
+                            <span>
+                              {queryData.sort.split('|')[1] === 'ascend' ? (
+                                <SortAscendingOutlined />
+                              ) : (
+                                <SortDescendingOutlined />
+                              )}
+                            </span>
+                          ) : null}
+                          Sort by Name
+                        </Button>
+                      </Tooltip>
+                      <Tooltip title="Sort By Updation" placement="right">
+                        <Button onClick={() => handleSort('updatedAt')}>
+                          {queryData.sort.includes('updatedAt') ? (
+                            <span>
+                              {queryData.sort.split('|')[1] === 'ascend' ? (
+                                <SortAscendingOutlined />
+                              ) : (
+                                <SortDescendingOutlined />
+                              )}
+                            </span>
+                          ) : null}
+                          Sort By Updation
+                        </Button>
+                      </Tooltip>
+                    </Col>
+                    <Col xs={24} md={12} style={{ textAlign: 'right' }}>
+                      <Pagination
+                        size="default"
+                        showTotal={(total, range) =>
+                          `${range[0]}-${range[1]} of ${total} customers`
+                        }
+                        showSizeChanger
+                        pageSizeOptions={[5, 10, 50, 100]}
+                        defaultCurrent={1}
+                        defaultPageSize={customerData.limit}
+                        total={customerData.totalRecords}
+                        onChange={handlePaginationChange}
+                      />
+                    </Col>
                   </Row>
                 ) : null}
               </Col>
             </Row>
-            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-              <CustomerList customers={customerData.customers} />
-            </Row>
+            {!loadingCustomers && !customerData.customers.length ? (
+              <Result
+                status="404"
+                title="No Data Found"
+                subTitle="Your specified criteria doesn't match any record!"
+              />
+            ) : null}
+            <CustomerList
+              customers={customerData.customers}
+              onChange={handleCustomerDataChanges}
+            />
           </>
         ) : null}
       </div>
