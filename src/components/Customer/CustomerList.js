@@ -14,7 +14,7 @@ const { Text } = Typography;
 
 function CustomerList({ customers, onChange = () => {} }) {
   return (
-    <div style={{ height: '69vh', overflowY: 'auto', overflowX: 'hidden' }}>
+    <div style={{ height: '73vh', overflowY: 'auto', overflowX: 'hidden' }}>
       {customers.map((customer) => {
         const {
           _id,

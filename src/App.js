@@ -13,6 +13,10 @@ import NavBar from './components/NavBar/NavBar';
 import SideBar from './components/SideBar/SideBar';
 import registerAxiosErrorInterceptor from './util/axiosUtil';
 import Customer from './components/Customer/Customer';
+import Agents from './components/Config/Agents';
+import Admins from './components/Config/Admins';
+import Platforms from './components/Config/Platforms';
+import Labels from './components/Config/Labels';
 
 // this will handle 401, 403, 500 errors globally for all axios http calls
 registerAxiosErrorInterceptor();
@@ -45,10 +49,18 @@ function App() {
                 <Route path="/customers">
                   <Customer />
                 </Route>
-                <Route path="/agents">Agents</Route>
-                <Route path="/admins">Admins</Route>
-                <Route path="/platforms">Platforms</Route>
-                <Route path="/labels">Labels</Route>
+                <Route path="/agents">
+                  <Agents />
+                </Route>
+                <Route path="/admins">
+                  <Admins />
+                </Route>
+                <Route path="/platforms">
+                  <Platforms />
+                </Route>
+                <Route path="/labels">
+                  <Labels />
+                </Route>
               </Switch>
             </Layout.Content>
           </Layout>

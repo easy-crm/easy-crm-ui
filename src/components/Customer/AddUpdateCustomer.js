@@ -34,8 +34,8 @@ import useConfig from '../../util/hooks/useConfig';
 import useCreateCustomer from '../../util/hooks/useCreateCustomer';
 import useUpdateCustomer from '../../util/hooks/useUpdateCustomer';
 import CustomInputLabel from '../CustomInputLabel/CustomInputLabel';
-import LabelSelector from './LabelSelector';
-import PlatformSelector from './PlatformSelector';
+import LabelSelector from '../Config/LabelSelector';
+import PlatformSelector from '../Config/PlatformSelector';
 
 const { TabPane } = Tabs;
 const { Search } = Input;

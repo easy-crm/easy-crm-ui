@@ -22,8 +22,8 @@ import useCustomers from '../../util/hooks/useCustomers';
 
 import CustomerList from './CustomerList';
 import AddUpdateCustomer from './AddUpdateCustomer';
-import LabelSelector from './LabelSelector';
-import PlatformSelector from './PlatformSelector';
+import LabelSelector from '../Config/LabelSelector';
+import PlatformSelector from '../Config/PlatformSelector';
 import usePrefetchCustomers from '../../util/hooks/usePrefetchCustomers';
 
 const dateDisplay = 'MMM DD, YYYY';
