@@ -24,6 +24,7 @@ import CustomerList from './CustomerList';
 import AddUpdateCustomer from './AddUpdateCustomer';
 import LabelSelector from './LabelSelector';
 import PlatformSelector from './PlatformSelector';
+import usePrefetchCustomers from '../../util/hooks/usePrefetchCustomers';
 
 const dateDisplay = 'MMM DD, YYYY';
 
@@ -45,12 +46,18 @@ function Customer() {
     refetch,
   } = useCustomers(queryData);
 
+  usePrefetchCustomers({
+    ...queryData,
+    offset: queryData.offset + queryData.limit, // prefetch next page data
+  });
+
   const handlePaginationChange = (page, pageSize) => {
-    setQueryData({
+    const updatedData = {
       ...queryData,
       limit: pageSize,
       offset: page === 0 ? 0 : (page - 1) * pageSize,
-    });
+    };
+    setQueryData(updatedData);
   };
 
   const handleSearch = (searchKeyword) => {
@@ -98,7 +105,7 @@ function Customer() {
       <div className="view-container">
         <Row>
           <Col xs={24} md={6}>
-            <Title>
+            <Title level={2}>
               Customers&nbsp;
               <Spin
                 spinning={fetchingCustomers}

@@ -25,4 +25,8 @@ const getAvatarUrlFromName = (name) => {
   )}&color=fff`;
 };
 
-export { getQueryStringFromObject, getAvatarUrlFromName };
+const shortenDisplayString = (str = '') => {
+  return str.length <= 100 ? str : `${str.substring(0, 97)}...`;
+};
+
+export { getQueryStringFromObject, getAvatarUrlFromName, shortenDisplayString };

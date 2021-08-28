@@ -15,3 +15,4 @@ const useCustomers = (queryData) => {
 };
 
 export default useCustomers;
+export { getCustomers };

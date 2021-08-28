@@ -1,10 +1,14 @@
 import React from 'react';
-import { DeleteOutlined, PhoneTwoTone } from '@ant-design/icons';
-import { Typography, Card, Avatar, Col, Tag, Row, Button, Space } from 'antd';
+import { PhoneTwoTone } from '@ant-design/icons';
+import { Typography, Card, Avatar, Col, Tag, Row, Space, Tooltip } from 'antd';
 import { DateTime } from 'luxon';
-import { getAvatarUrlFromName } from '../../util/stringUtils';
+import {
+  getAvatarUrlFromName,
+  shortenDisplayString,
+} from '../../util/stringUtils';
 import { DISPLAY_DATE_FORMAT } from '../../util/constants';
 import AddUpdateCustomer from './AddUpdateCustomer';
+import DeleteCustomer from './DeleteCustomer';
 
 const { Text } = Typography;
 
@@ -71,14 +75,27 @@ function CustomerList({ customers, onChange = () => {} }) {
                   </Col>
                   <Col xs={24} md={6} style={{ paddingTop: '10px' }}>
                     {latestNote ? (
-                      <em>
-                        <strong>
-                          {DateTime.fromISO(latestNote.addedAt, {
-                            zone: 'utc',
-                          }).toFormat(DISPLAY_DATE_FORMAT)}
-                        </strong>
-                        : {latestNote.text}
-                      </em>
+                      <Tooltip
+                        title={
+                          <span>
+                            Latest Note added at&nbsp;
+                            {DateTime.fromISO(latestNote.addedAt, {
+                              zone: 'utc',
+                            }).toFormat(DISPLAY_DATE_FORMAT)}
+                            <br />
+                            {latestNote.text}
+                          </span>
+                        }
+                      >
+                        <em>
+                          <strong>
+                            {DateTime.fromISO(latestNote.addedAt, {
+                              zone: 'utc',
+                            }).toFormat(DISPLAY_DATE_FORMAT)}
+                          </strong>
+                          : {shortenDisplayString(latestNote.text)}
+                        </em>
+                      </Tooltip>
                     ) : null}
                   </Col>
                   <Col xs={24} md={3} style={{ paddingTop: '10px' }}>
@@ -88,9 +105,7 @@ function CustomerList({ customers, onChange = () => {} }) {
                         customer={customer}
                         onChange={onChange}
                       />
-                      <Button type="danger">
-                        <DeleteOutlined />
-                      </Button>
+                      <DeleteCustomer customer={customer} onChange={onChange} />
                     </Space>
                   </Col>
                 </Row>
