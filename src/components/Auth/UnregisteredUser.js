@@ -4,7 +4,7 @@ import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import logo from '../../logo.png';
 
-function UnregistereUser() {
+function UnregisteredUser() {
   const { logout } = useAuth0();
   return (
     <Result
@@ -31,4 +31,4 @@ function UnregistereUser() {
   );
 }
 
-export default UnregistereUser;
+export default UnregisteredUser;

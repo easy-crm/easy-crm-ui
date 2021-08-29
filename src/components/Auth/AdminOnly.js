@@ -1,9 +1,11 @@
 import { useContext } from 'react';
-import { UserRoleContext } from '../../context/UserRoleContext';
+import { UserInfoContext } from '../../context/UserInfoContext';
 
 function AdminOnly({ children }) {
-  const { userRole } = useContext(UserRoleContext);
-  if (userRole === 'ADMIN') {
+  const {
+    userInfo: { role },
+  } = useContext(UserInfoContext);
+  if (role === 'ADMIN') {
     return children;
   }
   return null;

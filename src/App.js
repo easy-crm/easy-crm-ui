@@ -19,7 +19,7 @@ import Admins from './components/Config/Admins';
 import Platforms from './components/Config/Platforms';
 import Labels from './components/Config/Labels';
 import Protected from './components/Auth/Protected';
-import { UserRoleProvider } from './context/UserRoleContext';
+import { UserInfoProvider } from './context/UserInfoContext';
 // this will handle 401, 403, 500 errors globally for all axios http calls
 registerAxiosErrorInterceptor();
 
@@ -38,7 +38,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserRoleProvider>
+      <UserInfoProvider>
         <Protected>
           <Router>
             <div className="App">
@@ -71,7 +71,7 @@ function App() {
             </div>
           </Router>
         </Protected>
-      </UserRoleProvider>
+      </UserInfoProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
