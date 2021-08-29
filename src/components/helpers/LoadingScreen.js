@@ -11,7 +11,7 @@ function LoadingScreen() {
       style={{
         height: '100vh',
         width: '100vw',
-        backgroundColor: 'black',
+        backgroundColor: '#001528',
       }}
     >
       <div>
