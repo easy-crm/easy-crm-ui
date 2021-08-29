@@ -7,9 +7,9 @@
   font-size: 25px;
 }
 
-.ant-drawer-content,.ant-drawer-header {
+.ant-drawer-content,
+.ant-drawer-header {
   background-color: #001528 !important;
-
 }
 .ant-drawer-close {
   color: white !important;
@@ -36,5 +36,8 @@
   .logo {
     height: 40px;
     margin-left: 1rem;
+  }
+  .hidden-xs {
+    display: none;
   }
 }

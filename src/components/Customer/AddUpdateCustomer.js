@@ -37,6 +37,8 @@ import useUpdateCustomer from '../../util/hooks/useUpdateCustomer';
 import CustomInputLabel from '../CustomInputLabel/CustomInputLabel';
 import LabelSelector from '../Config/LabelSelector';
 import PlatformSelector from '../Config/PlatformSelector';
+import AdminOnly from '../Auth/AdminOnly';
+import AgentOnly from '../Auth/AgentOnly';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -328,6 +330,78 @@ function AddUpdateCustomer({
     </>
   );
 
+  const NotesForm = (
+    <div style={{ height: '63vh', overflowY: 'auto' }}>
+      <Search
+        autoFocus
+        prefix={
+          <CustomInputLabel text="New Note" icon={<CreditCardTwoTone />} />
+        }
+        size="large"
+        allowClear
+        placeholder="Enter something here & press enter"
+        enterButton="Add New Note"
+        value={newNote}
+        onChange={(e) => setNewNote(e.target.value)}
+        onSearch={handleAddNewNote}
+      />
+
+      {!newNotes.length ? (
+        <Row justify="center">
+          <h2 style={{ color: 'grey', marginTop: '10px' }}>
+            <InboxOutlined /> &nbsp;No new notes
+          </h2>
+        </Row>
+      ) : (
+        <>
+          <Divider plain>New Notes</Divider>
+          {newNotes.map((note, index) => (
+            <p key={index + note.text}>
+              <Space>
+                <Tooltip title="Delete Note" placement="right">
+                  <Button danger onClick={() => handleDeleteNote(note)}>
+                    <DeleteOutlined />
+                  </Button>
+                </Tooltip>
+                <Tag color="green">
+                  {DateTime.fromISO(note.addedAt, {
+                    zone: 'utc',
+                  }).toFormat(DISPLAY_DATE_FORMAT)}
+                </Tag>
+                <em>{note.text}</em>
+              </Space>
+            </p>
+          ))}
+        </>
+      )}
+      {type === 'UPDATE' ? (
+        <>
+          {!existingNotes.length ? (
+            <Row justify="center">
+              <h2 style={{ color: 'grey', marginTop: '10px' }}>
+                <InboxOutlined /> &nbsp;No Existing Notes
+              </h2>
+            </Row>
+          ) : (
+            <>
+              <Divider plain>Existing Notes</Divider>
+              {existingNotes.map((note) => (
+                <p key={note._id}>
+                  <Tag color="blue">
+                    {DateTime.fromISO(note.addedAt, {
+                      zone: 'utc',
+                    }).toFormat(DISPLAY_DATE_FORMAT)}
+                  </Tag>
+                  <em>{note.text}</em>
+                </p>
+              ))}
+            </>
+          )}
+        </>
+      ) : null}
+    </div>
+  );
+
   return (
     <>
       <Button
@@ -340,9 +414,18 @@ function AddUpdateCustomer({
             Add Customer
           </>
         ) : (
-          <Tooltip title="Update Customer" placement="top">
-            <FormOutlined />
-          </Tooltip>
+          <>
+            <AgentOnly>
+              <Tooltip title="Add & View Notes" placement="top">
+                <FormOutlined /> Notes
+              </Tooltip>
+            </AgentOnly>
+            <AdminOnly>
+              <Tooltip title="Update Customer & Add/View Notes" placement="top">
+                <FormOutlined />
+              </Tooltip>
+            </AdminOnly>
+          </>
         )}
       </Button>
       <Modal
@@ -372,95 +455,24 @@ function AddUpdateCustomer({
         okText={type === 'ADD' ? 'Add Customer' : 'Update Customer'}
       >
         <Spin spinning={creating || updating}>
-          <Tabs defaultActiveKey={type === 'ADD' ? 'details' : 'notes'}>
-            <TabPane tab="Customer Details" key="details">
-              <Row
-                justify="center"
-                style={{ height: '65vh', overflowY: 'auto' }}
-              >
-                <Col xs="24" md={12}>
-                  {DetailsForm}
-                </Col>
-              </Row>
-            </TabPane>
-            <TabPane tab="Notes" key="notes">
-              <div style={{ height: '63vh', overflowY: 'auto' }}>
-                <Search
-                  autoFocus
-                  prefix={
-                    <CustomInputLabel
-                      text="New Note"
-                      icon={<CreditCardTwoTone />}
-                    />
-                  }
-                  size="large"
-                  allowClear
-                  placeholder="Enter something here & press enter"
-                  enterButton="Add New Note"
-                  value={newNote}
-                  onChange={(e) => setNewNote(e.target.value)}
-                  onSearch={handleAddNewNote}
-                />
-
-                {!newNotes.length ? (
-                  <Row justify="center">
-                    <h2 style={{ color: 'grey', marginTop: '10px' }}>
-                      <InboxOutlined /> &nbsp;No new notes
-                    </h2>
-                  </Row>
-                ) : (
-                  <>
-                    <Divider plain>New Notes</Divider>
-                    {newNotes.map((note, index) => (
-                      <p key={index + note.text}>
-                        <Space>
-                          <Tooltip title="Delete Note" placement="right">
-                            <Button
-                              danger
-                              onClick={() => handleDeleteNote(note)}
-                            >
-                              <DeleteOutlined />
-                            </Button>
-                          </Tooltip>
-                          <Tag color="green">
-                            {DateTime.fromISO(note.addedAt, {
-                              zone: 'utc',
-                            }).toFormat(DISPLAY_DATE_FORMAT)}
-                          </Tag>
-                          <em>{note.text}</em>
-                        </Space>
-                      </p>
-                    ))}
-                  </>
-                )}
-                {type === 'UPDATE' ? (
-                  <>
-                    {!existingNotes.length ? (
-                      <Row justify="center">
-                        <h2 style={{ color: 'grey', marginTop: '10px' }}>
-                          <InboxOutlined /> &nbsp;No Existing Notes
-                        </h2>
-                      </Row>
-                    ) : (
-                      <>
-                        <Divider plain>Existing Notes</Divider>
-                        {existingNotes.map((note) => (
-                          <p key={note._id}>
-                            <Tag color="blue">
-                              {DateTime.fromISO(note.addedAt, {
-                                zone: 'utc',
-                              }).toFormat(DISPLAY_DATE_FORMAT)}
-                            </Tag>
-                            <em>{note.text}</em>
-                          </p>
-                        ))}
-                      </>
-                    )}
-                  </>
-                ) : null}
-              </div>
-            </TabPane>
-          </Tabs>
+          <AdminOnly>
+            <Tabs defaultActiveKey={type === 'ADD' ? 'details' : 'notes'}>
+              <TabPane tab="Customer Details" key="details">
+                <Row
+                  justify="center"
+                  style={{ height: '65vh', overflowY: 'auto' }}
+                >
+                  <Col xs="24" md={12}>
+                    {DetailsForm}
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane tab="Notes" key="notes">
+                {NotesForm}
+              </TabPane>
+            </Tabs>
+          </AdminOnly>
+          <AgentOnly>{NotesForm}</AgentOnly>
         </Spin>
       </Modal>
     </>

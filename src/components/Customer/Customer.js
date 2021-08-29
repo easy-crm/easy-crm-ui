@@ -25,6 +25,7 @@ import AddUpdateCustomer from './AddUpdateCustomer';
 import LabelSelector from '../Config/LabelSelector';
 import PlatformSelector from '../Config/PlatformSelector';
 import usePrefetchCustomers from '../../util/hooks/usePrefetchCustomers';
+import AdminOnly from '../Auth/AdminOnly';
 
 const dateDisplay = 'MMM DD, YYYY';
 
@@ -126,16 +127,18 @@ function Customer() {
               onSearch={handleSearch}
             />
           </Col>
-          <Col
-            xs={24}
-            md={4}
-            style={{ paddingTop: '10px', textAlign: 'right' }}
-          >
-            <AddUpdateCustomer
-              type="ADD"
-              onChange={handleCustomerDataChanges}
-            />
-          </Col>
+          <AdminOnly>
+            <Col
+              xs={24}
+              md={4}
+              style={{ paddingTop: '10px', textAlign: 'right' }}
+            >
+              <AddUpdateCustomer
+                type="ADD"
+                onChange={handleCustomerDataChanges}
+              />
+            </Col>
+          </AdminOnly>
         </Row>
         {customerData ? (
           <>

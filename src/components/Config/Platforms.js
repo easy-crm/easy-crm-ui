@@ -27,6 +27,7 @@ import createPromise from '../../util/createPromise';
 import useConfig from '../../util/hooks/useConfig';
 import useUpdateConfig from '../../util/hooks/useUpdateConfig';
 import { stringToColour } from '../../util/stringUtils';
+import AdminOnly from '../Auth/AdminOnly';
 import CustomInputLabel from '../CustomInputLabel/CustomInputLabel';
 import ColorSuggestions from './ColorSuggestions';
 
@@ -120,58 +121,64 @@ function Platforms() {
         Platforms &nbsp;
         <Spin spinning={isFetching} indicator={<LoadingOutlined />} />
       </Title>
-      <Row justify="center">
-        <Col xs={24}>
-          <Card>
-            <Spin spinning={updating}>
-              <Row gutter={10} justify="center">
-                <Col xs={24} md={8}>
-                  <Input
-                    allowClear
-                    value={platformObj.name}
-                    onChange={(e) =>
-                      setPlatformObj({
-                        ...platformObj,
-                        name: e.target.value,
-                        color: `#${stringToColour(e.target.value)}`,
-                      })
+      <AdminOnly>
+        <Row justify="center">
+          <Col xs={24}>
+            <Card>
+              <Spin spinning={updating}>
+                <Row gutter={10} justify="center">
+                  <Col xs={24} md={8}>
+                    <Input
+                      allowClear
+                      value={platformObj.name}
+                      onChange={(e) =>
+                        setPlatformObj({
+                          ...platformObj,
+                          name: e.target.value,
+                          color: `#${stringToColour(e.target.value)}`,
+                        })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Text"
+                          icon={<IdcardTwoTone />}
+                          required
+                        />
+                      }
+                      suffix={
+                        <Tooltip title="Selected Label Color">
+                          <Tag color={platformObj.color}>
+                            {platformObj.color}
+                          </Tag>
+                        </Tooltip>
+                      }
+                      placeholder="Platform's Name"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={4}>
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={onClickAddPlatform}
+                    >
+                      <AppstoreAddOutlined /> Add Platform
+                    </Button>
+                  </Col>
+                </Row>
+                <Row justify="center">
+                  <ColorSuggestions
+                    onClick={(color) =>
+                      setPlatformObj({ ...platformObj, color })
                     }
-                    prefix={
-                      <CustomInputLabel
-                        text="Text"
-                        icon={<IdcardTwoTone />}
-                        required
-                      />
-                    }
-                    suffix={
-                      <Tooltip title="Selected Label Color">
-                        <Tag color={platformObj.color}>{platformObj.color}</Tag>
-                      </Tooltip>
-                    }
-                    placeholder="Platform's Name"
-                    size="large"
-                    onKeyDown={handleKeyDown}
                   />
-                </Col>
-                <Col xs={24} md={4}>
-                  <Button
-                    type="primary"
-                    size="large"
-                    onClick={onClickAddPlatform}
-                  >
-                    <AppstoreAddOutlined /> Add Platform
-                  </Button>
-                </Col>
-              </Row>
-              <Row justify="center">
-                <ColorSuggestions
-                  onClick={(color) => setPlatformObj({ ...platformObj, color })}
-                />
-              </Row>
-            </Spin>
-          </Card>
-        </Col>
-      </Row>
+                </Row>
+              </Spin>
+            </Card>
+          </Col>
+        </Row>
+      </AdminOnly>
       {config &&
         config.platforms.map((platform) => {
           return (
@@ -185,9 +192,11 @@ function Platforms() {
               }}
               style={{ fontSize: '25px', padding: '15px', margin: '10px' }}
               closeIcon={
-                <CloseCircleOutlined
-                  style={{ fontSize: '25px', color: 'black', margin: '5px' }}
-                />
+                <AdminOnly>
+                  <CloseCircleOutlined
+                    style={{ fontSize: '25px', color: 'black', margin: '5px' }}
+                  />
+                </AdminOnly>
               }
             >
               {platform.name}

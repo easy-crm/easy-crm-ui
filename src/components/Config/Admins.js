@@ -30,6 +30,7 @@ import createPromise from '../../util/createPromise';
 import useConfig from '../../util/hooks/useConfig';
 import useUpdateConfig from '../../util/hooks/useUpdateConfig';
 import { getAvatarUrlFromName } from '../../util/stringUtils';
+import AdminOnly from '../Auth/AdminOnly';
 import CustomInputLabel from '../CustomInputLabel/CustomInputLabel';
 
 const { Title, Text } = Typography;
@@ -122,78 +123,84 @@ function Admins() {
         Admins &nbsp;
         <Spin spinning={isFetching} indicator={<LoadingOutlined />} />
       </Title>
-      <Row justify="center">
-        <Col xs={24}>
-          <Card>
-            <Spin spinning={updating}>
-              <Row gutter={10}>
-                <Col xs={24} md={8}>
-                  <Input
-                    allowClear
-                    value={adminInfo.name}
-                    onChange={(e) =>
-                      setAdminInfo({ ...adminInfo, name: e.target.value })
-                    }
-                    prefix={
-                      <CustomInputLabel
-                        text="Name"
-                        icon={<IdcardTwoTone />}
-                        required
-                      />
-                    }
-                    placeholder="Admin's Name"
-                    size="large"
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col xs={24} md={6}>
-                  <Input
-                    allowClear
-                    value={adminInfo.email}
-                    onChange={(e) =>
-                      setAdminInfo({ ...adminInfo, email: e.target.value })
-                    }
-                    prefix={
-                      <CustomInputLabel
-                        text="Email"
-                        icon={<MailTwoTone />}
-                        required
-                      />
-                    }
-                    placeholder="Admin's Email"
-                    size="large"
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col xs={24} md={6}>
-                  <Input
-                    allowClear
-                    value={adminInfo.phone}
-                    onChange={(e) =>
-                      setAdminInfo({ ...adminInfo, phone: e.target.value })
-                    }
-                    prefix={
-                      <CustomInputLabel
-                        text="Mobile"
-                        icon={<MobileTwoTone />}
-                        required
-                      />
-                    }
-                    placeholder="Admin's Phone"
-                    size="large"
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col xs={24} md={4}>
-                  <Button type="primary" size="large" onClick={onClickAddAdmin}>
-                    <SketchOutlined /> Add Admin
-                  </Button>
-                </Col>
-              </Row>
-            </Spin>
-          </Card>
-        </Col>
-      </Row>
+      <AdminOnly>
+        <Row justify="center">
+          <Col xs={24}>
+            <Card>
+              <Spin spinning={updating}>
+                <Row gutter={10}>
+                  <Col xs={24} md={8}>
+                    <Input
+                      allowClear
+                      value={adminInfo.name}
+                      onChange={(e) =>
+                        setAdminInfo({ ...adminInfo, name: e.target.value })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Name"
+                          icon={<IdcardTwoTone />}
+                          required
+                        />
+                      }
+                      placeholder="Admin's Name"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={6}>
+                    <Input
+                      allowClear
+                      value={adminInfo.email}
+                      onChange={(e) =>
+                        setAdminInfo({ ...adminInfo, email: e.target.value })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Email"
+                          icon={<MailTwoTone />}
+                          required
+                        />
+                      }
+                      placeholder="Admin's Email"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={6}>
+                    <Input
+                      allowClear
+                      value={adminInfo.phone}
+                      onChange={(e) =>
+                        setAdminInfo({ ...adminInfo, phone: e.target.value })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Mobile"
+                          icon={<MobileTwoTone />}
+                          required
+                        />
+                      }
+                      placeholder="Admin's Phone"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={4}>
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={onClickAddAdmin}
+                    >
+                      <SketchOutlined /> Add Admin
+                    </Button>
+                  </Col>
+                </Row>
+              </Spin>
+            </Card>
+          </Col>
+        </Row>
+      </AdminOnly>
       <Row justify="center">
         {config && !config.admins.length ? (
           <Result
@@ -232,16 +239,18 @@ function Admins() {
                           <Col xs={16}>
                             <Title level={4}>{admin.name}</Title>
                           </Col>
-                          <Col xs={8}>
-                            <Button
-                              type="danger"
-                              onClick={() => {
-                                handleDeleteAdmin(admin);
-                              }}
-                            >
-                              <DeleteOutlined />
-                            </Button>
-                          </Col>
+                          <AdminOnly>
+                            <Col xs={8}>
+                              <Button
+                                type="danger"
+                                onClick={() => {
+                                  handleDeleteAdmin(admin);
+                                }}
+                              >
+                                <DeleteOutlined />
+                              </Button>
+                            </Col>
+                          </AdminOnly>
                         </Row>
                       }
                       description={

@@ -30,6 +30,7 @@ import createPromise from '../../util/createPromise';
 import useConfig from '../../util/hooks/useConfig';
 import useUpdateConfig from '../../util/hooks/useUpdateConfig';
 import { getAvatarUrlFromName } from '../../util/stringUtils';
+import AdminOnly from '../Auth/AdminOnly';
 import CustomInputLabel from '../CustomInputLabel/CustomInputLabel';
 
 const { Title, Text } = Typography;
@@ -122,78 +123,84 @@ function Agents() {
         Agents &nbsp;
         <Spin spinning={isFetching} indicator={<LoadingOutlined />} />
       </Title>
-      <Row justify="center">
-        <Col xs={24}>
-          <Card>
-            <Spin spinning={updating}>
-              <Row gutter={10}>
-                <Col xs={24} md={8}>
-                  <Input
-                    allowClear
-                    value={agentInfo.name}
-                    onChange={(e) =>
-                      setAgentInfo({ ...agentInfo, name: e.target.value })
-                    }
-                    prefix={
-                      <CustomInputLabel
-                        text="Name"
-                        icon={<IdcardTwoTone />}
-                        required
-                      />
-                    }
-                    placeholder="Agent's Name"
-                    size="large"
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col xs={24} md={6}>
-                  <Input
-                    allowClear
-                    value={agentInfo.email}
-                    onChange={(e) =>
-                      setAgentInfo({ ...agentInfo, email: e.target.value })
-                    }
-                    prefix={
-                      <CustomInputLabel
-                        text="Email"
-                        icon={<MailTwoTone />}
-                        required
-                      />
-                    }
-                    placeholder="Agent's Email"
-                    size="large"
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col xs={24} md={6}>
-                  <Input
-                    allowClear
-                    value={agentInfo.phone}
-                    onChange={(e) =>
-                      setAgentInfo({ ...agentInfo, phone: e.target.value })
-                    }
-                    prefix={
-                      <CustomInputLabel
-                        text="Mobile"
-                        icon={<MobileTwoTone />}
-                        required
-                      />
-                    }
-                    placeholder="Agent's Phone"
-                    size="large"
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col xs={24} md={4}>
-                  <Button type="primary" size="large" onClick={onClickAddAgent}>
-                    <CustomerServiceOutlined /> Add Agent
-                  </Button>
-                </Col>
-              </Row>
-            </Spin>
-          </Card>
-        </Col>
-      </Row>
+      <AdminOnly>
+        <Row justify="center">
+          <Col xs={24}>
+            <Card>
+              <Spin spinning={updating}>
+                <Row gutter={10}>
+                  <Col xs={24} md={8}>
+                    <Input
+                      allowClear
+                      value={agentInfo.name}
+                      onChange={(e) =>
+                        setAgentInfo({ ...agentInfo, name: e.target.value })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Name"
+                          icon={<IdcardTwoTone />}
+                          required
+                        />
+                      }
+                      placeholder="Agent's Name"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={6}>
+                    <Input
+                      allowClear
+                      value={agentInfo.email}
+                      onChange={(e) =>
+                        setAgentInfo({ ...agentInfo, email: e.target.value })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Email"
+                          icon={<MailTwoTone />}
+                          required
+                        />
+                      }
+                      placeholder="Agent's Email"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={6}>
+                    <Input
+                      allowClear
+                      value={agentInfo.phone}
+                      onChange={(e) =>
+                        setAgentInfo({ ...agentInfo, phone: e.target.value })
+                      }
+                      prefix={
+                        <CustomInputLabel
+                          text="Mobile"
+                          icon={<MobileTwoTone />}
+                          required
+                        />
+                      }
+                      placeholder="Agent's Phone"
+                      size="large"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </Col>
+                  <Col xs={24} md={4}>
+                    <Button
+                      type="primary"
+                      size="large"
+                      onClick={onClickAddAgent}
+                    >
+                      <CustomerServiceOutlined /> Add Agent
+                    </Button>
+                  </Col>
+                </Row>
+              </Spin>
+            </Card>
+          </Col>
+        </Row>
+      </AdminOnly>
       <Row justify="center">
         {config && !config.agents.length ? (
           <Result
@@ -233,16 +240,18 @@ function Agents() {
                               {agent.name}
                             </Title>
                           </Col>
-                          <Col xs={8}>
-                            <Button
-                              type="danger"
-                              onClick={() => {
-                                handleDeleteAgent(agent);
-                              }}
-                            >
-                              <DeleteOutlined />
-                            </Button>
-                          </Col>
+                          <AdminOnly>
+                            <Col xs={8}>
+                              <Button
+                                type="danger"
+                                onClick={() => {
+                                  handleDeleteAgent(agent);
+                                }}
+                              >
+                                <DeleteOutlined />
+                              </Button>
+                            </Col>
+                          </AdminOnly>
                         </Row>
                       }
                       description={

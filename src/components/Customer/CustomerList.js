@@ -9,6 +9,7 @@ import {
 import { DISPLAY_DATE_FORMAT } from '../../util/constants';
 import AddUpdateCustomer from './AddUpdateCustomer';
 import DeleteCustomer from './DeleteCustomer';
+import AdminOnly from '../Auth/AdminOnly';
 
 const { Text } = Typography;
 
@@ -105,7 +106,12 @@ function CustomerList({ customers, onChange = () => {} }) {
                         customer={customer}
                         onChange={onChange}
                       />
-                      <DeleteCustomer customer={customer} onChange={onChange} />
+                      <AdminOnly>
+                        <DeleteCustomer
+                          customer={customer}
+                          onChange={onChange}
+                        />
+                      </AdminOnly>
                     </Space>
                   </Col>
                 </Row>
