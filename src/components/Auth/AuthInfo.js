@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, Row, Space, Tooltip } from 'antd';
 import { UserInfoContext } from '../../context/UserInfoContext';
+import { getAvatarUrlFromName } from '../../util/stringUtils';
 
 function AuthInfo() {
   const { isAuthenticated, user } = useAuth0();
@@ -20,7 +21,7 @@ function AuthInfo() {
       >
         <Space>
           <>
-            <Avatar src={user.picture} size="large" />
+            <Avatar src={getAvatarUrlFromName(name)} size="large" />
             <span style={{ color: 'white' }}>Hello {name} &nbsp;</span>
           </>
         </Space>

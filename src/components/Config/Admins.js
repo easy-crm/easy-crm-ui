@@ -24,8 +24,9 @@ import {
 } from 'antd';
 import Avatar from 'antd/lib/avatar/avatar';
 import { cloneDeep } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
+import { UserInfoContext } from '../../context/UserInfoContext';
 import createPromise from '../../util/createPromise';
 import useConfig from '../../util/hooks/useConfig';
 import useUpdateConfig from '../../util/hooks/useUpdateConfig';
@@ -38,6 +39,9 @@ const { Meta } = Card;
 
 function Admins() {
   const queryClient = useQueryClient();
+  const {
+    userInfo: { email: loggedInUser },
+  } = useContext(UserInfoContext);
   const [closePromise, setClosePromise] = useState(createPromise());
   const { data: config, isLoading, isFetching } = useConfig();
   const [adminInfo, setAdminInfo] = useState({
@@ -240,16 +244,19 @@ function Admins() {
                             <Title level={4}>{admin.name}</Title>
                           </Col>
                           <AdminOnly>
-                            <Col xs={8}>
-                              <Button
-                                type="danger"
-                                onClick={() => {
-                                  handleDeleteAdmin(admin);
-                                }}
-                              >
-                                <DeleteOutlined />
-                              </Button>
-                            </Col>
+                            {/* don't allow self delete */}
+                            {loggedInUser !== admin.email ? (
+                              <Col xs={8}>
+                                <Button
+                                  type="danger"
+                                  onClick={() => {
+                                    handleDeleteAdmin(admin);
+                                  }}
+                                >
+                                  <DeleteOutlined />
+                                </Button>
+                              </Col>
+                            ) : null}
                           </AdminOnly>
                         </Row>
                       }
