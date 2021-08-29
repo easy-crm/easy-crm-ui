@@ -5,22 +5,8 @@ import {
 } from '@ant-design/icons';
 import { Button, message, Modal, Spin, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import createPromise from '../../util/createPromise';
 import useDeleteCustomer from '../../util/hooks/useDeleteCustomer';
-
-const createPromise = (handler) => {
-  let resolve;
-  let reject;
-
-  const promise = new Promise((_resolve, _reject) => {
-    resolve = _resolve;
-    reject = _reject;
-    if (handler) handler(resolve, reject);
-  });
-
-  promise.resolve = resolve;
-  promise.reject = reject;
-  return promise;
-};
 
 function DeleteCustomer({ customer, onChange }) {
   const [closePromise, setClosePromise] = useState(createPromise());

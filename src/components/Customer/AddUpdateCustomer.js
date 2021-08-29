@@ -25,6 +25,7 @@ import {
   Tabs,
   Tag,
   Tooltip,
+  Typography,
 } from 'antd';
 import { cloneDeep } from 'lodash';
 import { DateTime } from 'luxon';
@@ -39,6 +40,8 @@ import PlatformSelector from '../Config/PlatformSelector';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
+const { Text } = Typography;
+
 const defaultCustomerState = {
   _id: null,
   name: '',
@@ -98,11 +101,19 @@ function AddUpdateCustomer({
       const availablePlatforms = config.platforms;
       const platformInfo = [];
       values.forEach((value) => {
-        const info = availablePlatforms.find(
+        const matched = availablePlatforms.find(
           (platform) => platform.name === value
         );
-        if (info) {
-          platformInfo.push({ clientCode: '', platform: info });
+        if (matched) {
+          const existingPlatformInfo = customerInfo.platformInfo;
+          const sameExists = existingPlatformInfo.find(
+            ({ platform: { name } }) => name === matched.name
+          );
+          let clientCode = '';
+          if (sameExists) {
+            clientCode = sameExists.clientCode;
+          }
+          platformInfo.push({ clientCode, platform: matched });
         }
       });
       setCustomerInfo({ ...customerInfo, platformInfo });
@@ -275,16 +286,30 @@ function AddUpdateCustomer({
           </Col>
         </Row>
       </div>
-      <Divider plain>
-        <CustomInputLabel
-          text="Specify Platforms & Client IDs"
-          icon={<AppstoreTwoTone />}
-        />
-      </Divider>
+
+      <br />
+      <PlatformSelector
+        width="100%"
+        value={customerInfo.platformInfo.map((info) => info.platform.name)}
+        onChange={handlePlatformChange}
+      />
+
+      {customerInfo.platformInfo.length ? (
+        <Divider plain>
+          <CustomInputLabel
+            text="Specify Platforms & Client IDs"
+            icon={<AppstoreTwoTone />}
+          />
+        </Divider>
+      ) : null}
       <Row>
         {customerInfo.platformInfo.map((info) => (
           <Col xs={24} md={12} key={info.platform.name}>
             <Input
+              style={{
+                height: '40px',
+                backgroundColor: info.clientCode ? 'white' : '#fcbfbf',
+              }}
               allowClear
               placeholder="Enter Client ID/Code"
               value={info.clientCode}
@@ -300,12 +325,6 @@ function AddUpdateCustomer({
           </Col>
         ))}
       </Row>
-      <br />
-      <PlatformSelector
-        width="100%"
-        value={customerInfo.platformInfo.map((info) => info.platform.name)}
-        onChange={handlePlatformChange}
-      />
     </>
   );
 
@@ -330,7 +349,15 @@ function AddUpdateCustomer({
         visible={showModal}
         width={1400}
         style={{ top: 0 }}
-        title={type === 'ADD' ? 'Add Customer' : 'Update Customer'}
+        title={
+          type === 'ADD' ? (
+            'Add Customer'
+          ) : (
+            <Text level={2}>
+              Update Customer : <Tag>{customer.name}</Tag>
+            </Text>
+          )
+        }
         onCancel={() => {
           setShowModal(false);
           if (type === 'ADD') {

@@ -29,4 +29,9 @@ const shortenDisplayString = (str = '') => {
   return str.length <= 100 ? str : `${str.substring(0, 97)}...`;
 };
 
-export { getQueryStringFromObject, getAvatarUrlFromName, shortenDisplayString };
+export {
+  getQueryStringFromObject,
+  getAvatarUrlFromName,
+  shortenDisplayString,
+  stringToColour,
+};

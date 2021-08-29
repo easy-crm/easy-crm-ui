@@ -5,6 +5,7 @@ import {
   DislikeOutlined,
   IdcardTwoTone,
   LikeOutlined,
+  LoadingOutlined,
   MailTwoTone,
   MobileTwoTone,
 } from '@ant-design/icons';
@@ -25,6 +26,7 @@ import Avatar from 'antd/lib/avatar/avatar';
 import { cloneDeep } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from 'react-query';
+import createPromise from '../../util/createPromise';
 import useConfig from '../../util/hooks/useConfig';
 import useUpdateConfig from '../../util/hooks/useUpdateConfig';
 import { getAvatarUrlFromName } from '../../util/stringUtils';
@@ -33,25 +35,10 @@ import CustomInputLabel from '../CustomInputLabel/CustomInputLabel';
 const { Title, Text } = Typography;
 const { Meta } = Card;
 
-const createPromise = (handler) => {
-  let resolve;
-  let reject;
-
-  const promise = new Promise((_resolve, _reject) => {
-    resolve = _resolve;
-    reject = _reject;
-    if (handler) handler(resolve, reject);
-  });
-
-  promise.resolve = resolve;
-  promise.reject = reject;
-  return promise;
-};
-
 function Agents() {
   const queryClient = useQueryClient();
   const [closePromise, setClosePromise] = useState(createPromise());
-  const { data: config, isLoading } = useConfig();
+  const { data: config, isLoading, isFetching } = useConfig();
   const [agentInfo, setAgentInfo] = useState({
     name: '',
     email: '',
@@ -131,7 +118,10 @@ function Agents() {
 
   return (
     <Spin spinning={isLoading}>
-      <Title level={2}>Agents</Title>
+      <Title level={2}>
+        Agents &nbsp;
+        <Spin spinning={isFetching} indicator={<LoadingOutlined />} />
+      </Title>
       <Row justify="center">
         <Col xs={24}>
           <Card>
