@@ -46,9 +46,14 @@ function CustomerList({ customers, onChange = () => {} }) {
                       src={getAvatarUrlFromName(customer.name)}
                     />
                   </Col>
-                  <Col xs={18} md={6} style={{ paddingTop: '10px' }}>
+                  <Col
+                    className="unselectable"
+                    xs={18}
+                    md={6}
+                    style={{ paddingTop: '10px' }}
+                  >
                     <h3>{name}</h3>
-                    <h4 className="unselectable">
+                    <h4>
                       <PhoneTwoTone style={{ fontSize: '20px' }} />
                       &nbsp;
                       <Text type="secondary">
@@ -90,6 +95,8 @@ function CustomerList({ customers, onChange = () => {} }) {
                             {DateTime.fromISO(latestNote.addedAt, {
                               zone: 'utc',
                             }).toFormat(DISPLAY_DATE_FORMAT)}
+                            <br />
+                            &nbsp; by {latestNote.addedBy.name}
                             <br />
                             {latestNote.text}
                           </span>

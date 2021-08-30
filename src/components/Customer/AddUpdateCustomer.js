@@ -13,6 +13,7 @@ import {
   UserAddOutlined,
 } from '@ant-design/icons';
 import {
+  Avatar,
   Button,
   Col,
   Divider,
@@ -39,6 +40,7 @@ import LabelSelector from '../Config/LabelSelector';
 import PlatformSelector from '../Config/PlatformSelector';
 import AdminOnly from '../Auth/AdminOnly';
 import AgentOnly from '../Auth/AgentOnly';
+import { getAvatarUrlFromName } from '../../util/stringUtils';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -54,6 +56,8 @@ const defaultCustomerState = {
   labels: [],
   platformInfo: [],
 };
+
+const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 function AddUpdateCustomer({
   type = 'ADD',
@@ -387,10 +391,16 @@ function AddUpdateCustomer({
               <Divider plain>Existing Notes</Divider>
               {existingNotes.map((note) => (
                 <p key={note._id}>
+                  <Tooltip title={note.addedBy.email}>
+                    <Avatar src={getAvatarUrlFromName(note.addedBy.name)} />
+                    &nbsp;<Tag>{note.addedBy.name}</Tag>
+                  </Tooltip>
                   <Tag color="blue">
                     {DateTime.fromISO(note.addedAt, {
                       zone: 'utc',
-                    }).toFormat(DISPLAY_DATE_FORMAT)}
+                    })
+                      .setZone(clientTZ)
+                      .toFormat(`${DISPLAY_DATE_FORMAT}| hh:mm:ss a`)}
                   </Tag>
                   <em>{note.text}</em>
                 </p>
@@ -472,7 +482,28 @@ function AddUpdateCustomer({
               </TabPane>
             </Tabs>
           </AdminOnly>
-          <AgentOnly>{NotesForm}</AgentOnly>
+          <AgentOnly>
+            <div style={{ border: 'solid 1px #d6d4d4' }}>
+              <Row>
+                <Col
+                  xs={8}
+                  md={4}
+                  style={{ paddingLeft: '10px', paddingTop: '5px' }}
+                >
+                  <CustomInputLabel text="Labels" icon={<TagTwoTone />} />
+                </Col>
+                <Col xs={16} md={20}>
+                  <LabelSelector
+                    width="100%"
+                    value={customerInfo.labels.map((label) => label.text)}
+                    onChange={handleLabelChange}
+                  />
+                </Col>
+              </Row>
+            </div>
+            <br />
+            {NotesForm}
+          </AgentOnly>
         </Spin>
       </Modal>
     </>

@@ -26,6 +26,7 @@ import LabelSelector from '../Config/LabelSelector';
 import PlatformSelector from '../Config/PlatformSelector';
 import usePrefetchCustomers from '../../util/hooks/usePrefetchCustomers';
 import AdminOnly from '../Auth/AdminOnly';
+import OwnerSelector from '../Config/OwnerSelector';
 
 const dateDisplay = 'MMM DD, YYYY';
 
@@ -154,6 +155,16 @@ function Customer() {
                   value={
                     appliedFilters.labels
                       ? appliedFilters.labels.split(',')
+                      : []
+                  }
+                />
+                <OwnerSelector
+                  onChange={(value) => {
+                    applyFilter('owners', value ? value.join(',') : null);
+                  }}
+                  value={
+                    appliedFilters.owners
+                      ? appliedFilters.owners.split(',')
                       : []
                   }
                 />

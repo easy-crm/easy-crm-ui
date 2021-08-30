@@ -153,7 +153,10 @@ function Agents() {
                       allowClear
                       value={agentInfo.email}
                       onChange={(e) =>
-                        setAgentInfo({ ...agentInfo, email: e.target.value })
+                        setAgentInfo({
+                          ...agentInfo,
+                          email: e.target.value ? e.target.value.trim() : null,
+                        })
                       }
                       prefix={
                         <CustomInputLabel
@@ -172,7 +175,10 @@ function Agents() {
                       allowClear
                       value={agentInfo.phone}
                       onChange={(e) =>
-                        setAgentInfo({ ...agentInfo, phone: e.target.value })
+                        setAgentInfo({
+                          ...agentInfo,
+                          phone: e.target.value ? e.target.value.trim() : null,
+                        })
                       }
                       prefix={
                         <CustomInputLabel

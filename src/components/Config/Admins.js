@@ -157,7 +157,10 @@ function Admins() {
                       allowClear
                       value={adminInfo.email}
                       onChange={(e) =>
-                        setAdminInfo({ ...adminInfo, email: e.target.value })
+                        setAdminInfo({
+                          ...adminInfo,
+                          email: e.target.value ? e.target.value.trim() : '',
+                        })
                       }
                       prefix={
                         <CustomInputLabel
@@ -176,7 +179,10 @@ function Admins() {
                       allowClear
                       value={adminInfo.phone}
                       onChange={(e) =>
-                        setAdminInfo({ ...adminInfo, phone: e.target.value })
+                        setAdminInfo({
+                          ...adminInfo,
+                          phone: e.target.value ? e.target.value.trim() : null,
+                        })
                       }
                       prefix={
                         <CustomInputLabel
