@@ -74,7 +74,6 @@ function Protected({ children }) {
       {(!isLoading && !isAuthenticated) ||
       (isAuthenticated && !userInfo.accessToken) ? (
         <>
-          TOKEN: {userInfo.accessToken}
           <LoadingScreen />
         </>
       ) : null}
@@ -87,7 +86,9 @@ function Protected({ children }) {
       ) : null}
 
       {/* legitmate user */}
-      {isAuthenticated && userInfo.role !== 'UNKNOWN' ? children : null}
+      {isAuthenticated && userInfo.accessToken && userInfo.role !== 'UNKNOWN'
+        ? children
+        : null}
     </>
   );
 }

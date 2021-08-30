@@ -38,8 +38,6 @@ function Customer() {
   const [queryData, setQueryData] = useState({
     sort: 'name|ascend',
     clientTZ: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    offset: 0,
-    limit: 50,
   });
   const [appliedFilters, setAppliedFilters] = useState({});
   const {
@@ -49,10 +47,13 @@ function Customer() {
     refetch,
   } = useCustomers(queryData);
 
-  usePrefetchCustomers({
-    ...queryData,
-    offset: queryData.offset + queryData.limit, // prefetch next page data
-  });
+  // prefetch next page data
+  if (queryData.limit) {
+    usePrefetchCustomers({
+      ...queryData,
+      offset: queryData.offset + queryData.limit, // prefetch next page data
+    });
+  }
 
   const handlePaginationChange = (page, pageSize) => {
     const updatedData = {
