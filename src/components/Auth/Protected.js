@@ -27,10 +27,7 @@ function Protected({ children }) {
     if (user && config) {
       const populateUserInfo = async () => {
         try {
-          const accessToken = await getAccessTokenSilently({
-            audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-            scope: 'read:current_user',
-          });
+          const accessToken = await getAccessTokenSilently();
           const { admins, agents } = config;
           const isAgent = agents.find((agent) => agent.email === user.email);
           const isAdmin = admins.find((admin) => admin.email === user.email);
@@ -53,7 +50,7 @@ function Protected({ children }) {
           }
         } catch (e) {
           // eslint-disable-next-line no-console
-          console.error('Error while getting access token');
+          console.error('Error while getting access token', e.message);
         }
       };
       populateUserInfo();
