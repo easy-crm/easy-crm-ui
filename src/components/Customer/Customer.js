@@ -38,6 +38,8 @@ function Customer() {
   const [queryData, setQueryData] = useState({
     sort: 'name|ascend',
     clientTZ: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    offset: 0,
+    limit: 50,
   });
   const [appliedFilters, setAppliedFilters] = useState({});
   const {
