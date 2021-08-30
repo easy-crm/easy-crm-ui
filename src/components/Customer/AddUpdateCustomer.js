@@ -456,7 +456,7 @@ function AddUpdateCustomer({
       >
         <Spin spinning={creating || updating}>
           <AdminOnly>
-            <Tabs defaultActiveKey={type === 'ADD' ? 'details' : 'notes'}>
+            <Tabs defaultActiveKey="details">
               <TabPane tab="Customer Details" key="details">
                 <Row
                   justify="center"

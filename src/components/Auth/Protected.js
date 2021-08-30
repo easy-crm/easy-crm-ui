@@ -47,6 +47,13 @@ function Protected({ children }) {
               email: user.email,
               accessToken,
             });
+          } else {
+            setUserInfo({
+              ...userInfo,
+              role: 'UNKNOWN',
+              email: user.email,
+              accessToken,
+            });
           }
         } catch (e) {
           // eslint-disable-next-line no-console
@@ -63,14 +70,24 @@ function Protected({ children }) {
 
   return (
     <>
+      {/* Loading while authentication in progress or access token is fetched */}
       {(!isLoading && !isAuthenticated) ||
       (isAuthenticated && !userInfo.accessToken) ? (
-        <LoadingScreen />
+        <>
+          TOKEN: {userInfo.accessToken}
+          <LoadingScreen />
+        </>
       ) : null}
-      {isAuthenticated && userInfo.accessToken && !userInfo.role ? (
+
+      {/* unknown user */}
+      {isAuthenticated &&
+      userInfo.accessToken &&
+      userInfo.role === 'UNKNOWN' ? (
         <UnregisteredUser />
       ) : null}
-      {isAuthenticated && userInfo.role ? children : null}
+
+      {/* legitmate user */}
+      {isAuthenticated && userInfo.role !== 'UNKNOWN' ? children : null}
     </>
   );
 }
