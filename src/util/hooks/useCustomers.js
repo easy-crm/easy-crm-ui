@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useQuery } from 'react-query';
+
 import { getQueryStringFromObject } from '../stringUtils';
 
 import { API_URLS } from '../constants';
@@ -23,5 +24,13 @@ const useCustomers = (queryData) => {
   );
 };
 
+const useExportCustomer = (queryData) => {
+  const exportQuery = { ...queryData };
+  exportQuery.ignoreLimit = 'y';
+  const accessToken = useAccessToken();
+  const queryString = getQueryStringFromObject(exportQuery);
+  return () => getCustomers(queryString, accessToken);
+};
+
 export default useCustomers;
-export { getCustomers };
+export { getCustomers, useExportCustomer };

@@ -27,6 +27,7 @@ import PlatformSelector from '../Config/PlatformSelector';
 import usePrefetchCustomers from '../../util/hooks/usePrefetchCustomers';
 import AdminOnly from '../Auth/AdminOnly';
 import OwnerSelector from '../Config/OwnerSelector';
+import ExportCustomersData from './ExportCustomersData';
 
 const dateDisplay = 'MMM DD, YYYY';
 
@@ -238,6 +239,9 @@ function Customer() {
                     `Follow Up: ${value.format('MMM DD, YYYY')}`
                   }
                 />
+                <AdminOnly>
+                  <ExportCustomersData queryData={queryData} />
+                </AdminOnly>
               </Col>
             </Row>
             <Row>
