@@ -220,71 +220,69 @@ function Admins() {
           />
         ) : null}
       </Row>
-      <Row
-        justify="center"
-        gutter={10}
-        style={{ height: '72vh', overflowY: 'auto' }}
-      >
-        {config
-          ? config.admins.map((admin, index) => {
-              return (
-                <Col xs={12} md={8} key={index + admin.email}>
-                  <Card
-                    style={{
-                      width: '100%',
-                      marginTop: 16,
-                      backgroundColor: '#D3D3D3',
-                      color: 'white',
-                    }}
-                  >
-                    <Meta
-                      avatar={
-                        <Avatar
-                          size={64}
-                          src={getAvatarUrlFromName(admin.name)}
-                        />
-                      }
-                      title={
-                        <Row gutter={10}>
-                          <Col xs={16}>
-                            <Title level={4}>{admin.name}</Title>
-                          </Col>
-                          <AdminOnly>
-                            {/* don't allow self delete */}
-                            {loggedInUser !== admin.email ? (
-                              <Col xs={8}>
-                                <Button
-                                  type="danger"
-                                  onClick={() => {
-                                    handleDeleteAdmin(admin);
-                                  }}
-                                >
-                                  <DeleteOutlined />
-                                </Button>
-                              </Col>
-                            ) : null}
-                          </AdminOnly>
-                        </Row>
-                      }
-                      description={
-                        <>
-                          <Text type="secondary">
-                            <MailTwoTone /> {admin.email}
-                          </Text>
-                          <br />
-                          <Text type="secondary">
-                            <MobileTwoTone />
-                            {admin.phone}
-                          </Text>
-                        </>
-                      }
-                    />
-                  </Card>
-                </Col>
-              );
-            })
-          : null}
-      </Row>
+      <div style={{ height: '72vh', overflowY: 'auto' }}>
+        <Row justify="center" gutter={10}>
+          {config
+            ? config.admins.map((admin, index) => {
+                return (
+                  <Col xs={24} md={8} key={index + admin.email}>
+                    <Card
+                      style={{
+                        width: '100%',
+                        marginTop: 16,
+                        backgroundColor: '#D3D3D3',
+                        color: 'white',
+                      }}
+                    >
+                      <Meta
+                        avatar={
+                          <Avatar
+                            size={64}
+                            src={getAvatarUrlFromName(admin.name)}
+                          />
+                        }
+                        title={
+                          <Row gutter={10}>
+                            <Col xs={16}>
+                              <Title level={4}>{admin.name}</Title>
+                            </Col>
+                            <AdminOnly>
+                              {/* don't allow self delete */}
+                              {loggedInUser !== admin.email ? (
+                                <Col xs={8}>
+                                  <Button
+                                    type="danger"
+                                    onClick={() => {
+                                      handleDeleteAdmin(admin);
+                                    }}
+                                  >
+                                    <DeleteOutlined />
+                                  </Button>
+                                </Col>
+                              ) : null}
+                            </AdminOnly>
+                          </Row>
+                        }
+                        description={
+                          <>
+                            <Text type="secondary">
+                              <MailTwoTone /> {admin.email}
+                            </Text>
+                            <br />
+                            <Text type="secondary">
+                              <MobileTwoTone />
+                              {admin.phone}
+                            </Text>
+                          </>
+                        }
+                      />
+                    </Card>
+                  </Col>
+                );
+              })
+            : null}
+        </Row>
+      </div>
     </Spin>
   );
 }

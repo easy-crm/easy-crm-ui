@@ -1,7 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import {
   AppstoreTwoTone,
-  CreditCardTwoTone,
   DeleteOutlined,
   FormOutlined,
   IdcardTwoTone,
@@ -374,16 +373,9 @@ function AddUpdateCustomer({
           <div style={{ height: '63vh', overflowY: 'auto' }}>
             <Search
               autoFocus
-              prefix={
-                <CustomInputLabel
-                  text="New Note"
-                  icon={<CreditCardTwoTone />}
-                />
-              }
-              size="large"
               allowClear
-              placeholder="Enter something here & press enter"
-              enterButton="Add New Note"
+              placeholder="Enter new note here & press enter"
+              enterButton="Add Note"
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
               onSearch={handleAddNewNote}

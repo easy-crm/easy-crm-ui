@@ -216,69 +216,67 @@ function Agents() {
           />
         ) : null}
       </Row>
-      <Row
-        justify="center"
-        gutter={10}
-        style={{ height: '72vh', overflowY: 'auto' }}
-      >
-        {config
-          ? config.agents.map((agent, index) => {
-              return (
-                <Col xs={12} md={8} key={index + agent.email}>
-                  <Card
-                    style={{
-                      width: '100%',
-                      marginTop: 16,
-                      backgroundColor: '#CFE5F7',
-                    }}
-                  >
-                    <Meta
-                      avatar={
-                        <Avatar
-                          size={64}
-                          src={getAvatarUrlFromName(agent.name)}
-                        />
-                      }
-                      title={
-                        <Row gutter={10}>
-                          <Col xs={16}>
-                            <Title level={4} type="secondary">
-                              {agent.name}
-                            </Title>
-                          </Col>
-                          <AdminOnly>
-                            <Col xs={8}>
-                              <Button
-                                type="danger"
-                                onClick={() => {
-                                  handleDeleteAgent(agent);
-                                }}
-                              >
-                                <DeleteOutlined />
-                              </Button>
+      <div style={{ height: '72vh', overflowY: 'auto' }}>
+        <Row justify="center">
+          {config
+            ? config.agents.map((agent, index) => {
+                return (
+                  <Col xs={24} md={8} key={index + agent.email}>
+                    <Card
+                      style={{
+                        width: '100%',
+                        marginTop: 16,
+                        backgroundColor: '#CFE5F7',
+                      }}
+                    >
+                      <Meta
+                        avatar={
+                          <Avatar
+                            size={64}
+                            src={getAvatarUrlFromName(agent.name)}
+                          />
+                        }
+                        title={
+                          <Row gutter={10}>
+                            <Col xs={16}>
+                              <Title level={4} type="secondary">
+                                {agent.name}
+                              </Title>
                             </Col>
-                          </AdminOnly>
-                        </Row>
-                      }
-                      description={
-                        <>
-                          <Text type="secondary">
-                            <MailTwoTone /> {agent.email}
-                          </Text>
-                          <br />
-                          <Text type="secondary">
-                            <MobileTwoTone />
-                            {agent.phone}
-                          </Text>
-                        </>
-                      }
-                    />
-                  </Card>
-                </Col>
-              );
-            })
-          : null}
-      </Row>
+                            <AdminOnly>
+                              <Col xs={8}>
+                                <Button
+                                  type="danger"
+                                  onClick={() => {
+                                    handleDeleteAgent(agent);
+                                  }}
+                                >
+                                  <DeleteOutlined />
+                                </Button>
+                              </Col>
+                            </AdminOnly>
+                          </Row>
+                        }
+                        description={
+                          <>
+                            <Text type="secondary">
+                              <MailTwoTone /> {agent.email}
+                            </Text>
+                            <br />
+                            <Text type="secondary">
+                              <MobileTwoTone />
+                              {agent.phone}
+                            </Text>
+                          </>
+                        }
+                      />
+                    </Card>
+                  </Col>
+                );
+              })
+            : null}
+        </Row>
+      </div>
     </Spin>
   );
 }
