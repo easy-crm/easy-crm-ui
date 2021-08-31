@@ -2,6 +2,7 @@ import React from 'react';
 import { PhoneTwoTone } from '@ant-design/icons';
 import { Typography, Card, Avatar, Col, Tag, Row, Space, Tooltip } from 'antd';
 import { DateTime } from 'luxon';
+import moment from 'moment';
 import {
   getAvatarUrlFromName,
   shortenDisplayString,
@@ -17,8 +18,8 @@ function CustomerList({ customers, onChange = () => {} }) {
   return (
     <div
       style={{
-        zoom: '80%',
-        height: '90vh',
+        // zoom: '90%',
+        height: '78vh',
         overflowY: 'auto',
         overflowX: 'hidden',
       }}
@@ -33,6 +34,7 @@ function CustomerList({ customers, onChange = () => {} }) {
           alternatePhone,
           labels,
           platformInfo = [],
+          nextFollowUpDate,
         } = customer;
         const [latestNote] = notes;
         return (
@@ -85,6 +87,15 @@ function CustomerList({ customers, onChange = () => {} }) {
                         <strong>{label.text}</strong>
                       </Tag>
                     ))}
+                    <br />
+                    <br />
+                    {nextFollowUpDate ? (
+                      <Tag>
+                        <strong>
+                          {moment(nextFollowUpDate).format('MMM DD, YYYY')}
+                        </strong>
+                      </Tag>
+                    ) : null}
                   </Col>
                   <Col xs={24} md={6} style={{ paddingTop: '10px' }}>
                     {latestNote ? (

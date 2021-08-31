@@ -16,6 +16,7 @@ import {
   Avatar,
   Button,
   Col,
+  DatePicker,
   Divider,
   Input,
   message,
@@ -31,6 +32,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { DateTime } from 'luxon';
 import React, { useEffect, useState } from 'react';
+import moment from 'moment';
 import { DISPLAY_DATE_FORMAT } from '../../util/constants';
 import useConfig from '../../util/hooks/useConfig';
 import useCreateCustomer from '../../util/hooks/useCreateCustomer';
@@ -55,6 +57,7 @@ const defaultCustomerState = {
   notes: [], // its array as per API but here we will use a single note
   labels: [],
   platformInfo: [],
+  nextFollowUpDate: null,
 };
 
 const clientTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -278,22 +281,6 @@ function AddUpdateCustomer({
       />
       <br />
       <br />
-      <div style={{ border: 'solid 1px #d6d4d4' }}>
-        <Row>
-          <Col xs={8} md={4} style={{ paddingLeft: '10px', paddingTop: '5px' }}>
-            <CustomInputLabel text="Labels" icon={<TagTwoTone />} />
-          </Col>
-          <Col xs={16} md={20}>
-            <LabelSelector
-              width="100%"
-              value={customerInfo.labels.map((label) => label.text)}
-              onChange={handleLabelChange}
-            />
-          </Col>
-        </Row>
-      </div>
-
-      <br />
       <PlatformSelector
         width="100%"
         value={customerInfo.platformInfo.map((info) => info.platform.name)}
@@ -334,82 +321,139 @@ function AddUpdateCustomer({
     </>
   );
 
-  const NotesForm = (
-    <div style={{ height: '63vh', overflowY: 'auto' }}>
-      <Search
-        autoFocus
-        prefix={
-          <CustomInputLabel text="New Note" icon={<CreditCardTwoTone />} />
-        }
-        size="large"
-        allowClear
-        placeholder="Enter something here & press enter"
-        enterButton="Add New Note"
-        value={newNote}
-        onChange={(e) => setNewNote(e.target.value)}
-        onSearch={handleAddNewNote}
-      />
-
-      {!newNotes.length ? (
-        <Row justify="center">
-          <h2 style={{ color: 'grey', marginTop: '10px' }}>
-            <InboxOutlined /> &nbsp;No new notes
-          </h2>
-        </Row>
-      ) : (
-        <>
-          <Divider plain>New Notes</Divider>
-          {newNotes.map((note, index) => (
-            <p key={index + note.text}>
-              <Space>
-                <Tooltip title="Delete Note" placement="right">
-                  <Button danger onClick={() => handleDeleteNote(note)}>
-                    <DeleteOutlined />
-                  </Button>
-                </Tooltip>
-                <Tag color="green">
-                  {DateTime.fromISO(note.addedAt, {
-                    zone: 'utc',
-                  }).toFormat(DISPLAY_DATE_FORMAT)}
-                </Tag>
-                <em>{note.text}</em>
-              </Space>
-            </p>
-          ))}
-        </>
-      )}
-      {type === 'UPDATE' ? (
-        <>
-          {!existingNotes.length ? (
-            <Row justify="center">
-              <h2 style={{ color: 'grey', marginTop: '10px' }}>
-                <InboxOutlined /> &nbsp;No Existing Notes
-              </h2>
+  const InteractionsForm = (
+    <>
+      <Row>
+        <Col xs={24} md={18}>
+          <div style={{ border: 'solid 1px #d6d4d4' }}>
+            <Row>
+              <Col
+                xs={8}
+                md={4}
+                style={{ paddingLeft: '10px', paddingTop: '5px' }}
+              >
+                <CustomInputLabel text="Labels" icon={<TagTwoTone />} />
+              </Col>
+              <Col xs={16} md={20}>
+                <LabelSelector
+                  width="100%"
+                  value={customerInfo.labels.map((label) => label.text)}
+                  onChange={handleLabelChange}
+                />
+              </Col>
             </Row>
-          ) : (
-            <>
-              <Divider plain>Existing Notes</Divider>
-              {existingNotes.map((note) => (
-                <p key={note._id}>
-                  <Tooltip title={note.addedBy.email}>
-                    <Avatar src={getAvatarUrlFromName(note.addedBy.name)} />
-                    &nbsp;<Tag>{note.addedBy.name}</Tag>
-                  </Tooltip>
-                  <Tag color="blue">
-                    {DateTime.fromISO(note.addedAt, {
-                      zone: 'utc',
-                    })
-                      .setZone(clientTZ)
-                      .toFormat(`${DISPLAY_DATE_FORMAT}| hh:mm:ss a`)}
-                  </Tag>
-                  <em>{note.text}</em>
-                </p>
-              ))}
-            </>
-          )}
-        </>
-      ) : null}
-    </div>
+          </div>
+        </Col>
+        <Col xs={24} md={6}>
+          <DatePicker
+            disabledDate={(current) =>
+              current && current < moment().startOf('day')
+            }
+            allowClear
+            value={
+              customerInfo.nextFollowUpDate
+                ? moment(customerInfo.nextFollowUpDate, 'YYYY-MM-DD')
+                : null
+            }
+            onChange={(value) =>
+              setCustomerInfo({
+                ...customerInfo,
+                nextFollowUpDate: value ? value.format('YYYY-MM-DD') : null,
+              })
+            }
+            placeholder="Next Follow Up"
+            format={(value) =>
+              `Next Follow Up: ${value.format('MMM DD, YYYY')}`
+            }
+          />
+        </Col>
+      </Row>
+      <br />
+      <Row>
+        <Col xs={24}>
+          <div style={{ height: '63vh', overflowY: 'auto' }}>
+            <Search
+              autoFocus
+              prefix={
+                <CustomInputLabel
+                  text="New Note"
+                  icon={<CreditCardTwoTone />}
+                />
+              }
+              size="large"
+              allowClear
+              placeholder="Enter something here & press enter"
+              enterButton="Add New Note"
+              value={newNote}
+              onChange={(e) => setNewNote(e.target.value)}
+              onSearch={handleAddNewNote}
+            />
+
+            {!newNotes.length ? (
+              <Row justify="center">
+                <h2 style={{ color: 'grey', marginTop: '10px' }}>
+                  <InboxOutlined /> &nbsp;No new notes
+                </h2>
+              </Row>
+            ) : (
+              <>
+                <Divider plain>New Notes</Divider>
+                {newNotes.map((note, index) => (
+                  <p key={index + note.text}>
+                    <Space>
+                      <Tooltip title="Delete Note" placement="right">
+                        <Button danger onClick={() => handleDeleteNote(note)}>
+                          <DeleteOutlined />
+                        </Button>
+                      </Tooltip>
+                      <Tag color="green">
+                        {DateTime.fromISO(note.addedAt, {
+                          zone: 'utc',
+                        }).toFormat(DISPLAY_DATE_FORMAT)}
+                      </Tag>
+                      <em>{note.text}</em>
+                    </Space>
+                  </p>
+                ))}
+              </>
+            )}
+            {type === 'UPDATE' ? (
+              <>
+                {!existingNotes.length ? (
+                  <Row justify="center">
+                    <h2 style={{ color: 'grey', marginTop: '10px' }}>
+                      <InboxOutlined /> &nbsp;No Existing Notes
+                    </h2>
+                  </Row>
+                ) : (
+                  <>
+                    <Divider plain>Existing Notes</Divider>
+                    {existingNotes.map((note) => (
+                      <p key={note._id}>
+                        <Tooltip title={note.addedBy.email}>
+                          <Avatar
+                            src={getAvatarUrlFromName(note.addedBy.name)}
+                          />
+                          &nbsp;<Tag>{note.addedBy.name}</Tag>
+                        </Tooltip>
+                        <Tag color="blue">
+                          {DateTime.fromISO(note.addedAt, {
+                            zone: 'utc',
+                          })
+                            .setZone(clientTZ)
+                            .toFormat(`${DISPLAY_DATE_FORMAT}| hh:mm:ss a`)}
+                        </Tag>
+                        <em>{note.text}</em>
+                      </p>
+                    ))}
+                  </>
+                )}
+              </>
+            ) : null}
+          </div>
+        </Col>
+      </Row>
+    </>
   );
 
   return (
@@ -477,33 +521,12 @@ function AddUpdateCustomer({
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="Notes" key="notes">
-                {NotesForm}
+              <TabPane tab="Interactions" key="Interactions">
+                {InteractionsForm}
               </TabPane>
             </Tabs>
           </AdminOnly>
-          <AgentOnly>
-            <div style={{ border: 'solid 1px #d6d4d4' }}>
-              <Row>
-                <Col
-                  xs={8}
-                  md={4}
-                  style={{ paddingLeft: '10px', paddingTop: '5px' }}
-                >
-                  <CustomInputLabel text="Labels" icon={<TagTwoTone />} />
-                </Col>
-                <Col xs={16} md={20}>
-                  <LabelSelector
-                    width="100%"
-                    value={customerInfo.labels.map((label) => label.text)}
-                    onChange={handleLabelChange}
-                  />
-                </Col>
-              </Row>
-            </div>
-            <br />
-            {NotesForm}
-          </AgentOnly>
+          <AgentOnly>{InteractionsForm}</AgentOnly>
         </Spin>
       </Modal>
     </>

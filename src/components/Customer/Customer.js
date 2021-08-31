@@ -148,50 +148,6 @@ function Customer() {
           <>
             <Row>
               <Col xs={24}>
-                <LabelSelector
-                  onChange={(value) => {
-                    applyFilter('labels', value ? value.join(',') : null);
-                  }}
-                  value={
-                    appliedFilters.labels
-                      ? appliedFilters.labels.split(',')
-                      : []
-                  }
-                />
-                <OwnerSelector
-                  onChange={(value) => {
-                    applyFilter('owners', value ? value.join(',') : null);
-                  }}
-                  value={
-                    appliedFilters.owners
-                      ? appliedFilters.owners.split(',')
-                      : []
-                  }
-                />
-                <PlatformSelector
-                  value={
-                    appliedFilters.platforms
-                      ? appliedFilters.platforms.split(',')
-                      : []
-                  }
-                  onChange={(value) => {
-                    applyFilter('platforms', value ? value.join(',') : null);
-                  }}
-                />
-                <Select
-                  placeholder="Platform Count"
-                  style={{ width: 150 }}
-                  allowClear
-                  onChange={(value) => {
-                    applyFilter('platformCount', value);
-                  }}
-                  value={appliedFilters.platformCount}
-                >
-                  <Option value="SINGLE">Single</Option>
-                  <Option value="MULTIPLE">Multiple</Option>
-                  <Option value="NONE">None</Option>
-                </Select>
-
                 <DatePicker
                   allowClear
                   value={
@@ -206,7 +162,9 @@ function Customer() {
                     )
                   }
                   placeholder="Created from"
-                  format={(value) => `From: ${value.format(dateDisplay)}`}
+                  format={(value) =>
+                    `Created from: ${value.format(dateDisplay)}`
+                  }
                 />
                 <DatePicker
                   allowClear
@@ -222,7 +180,9 @@ function Customer() {
                     )
                   }
                   placeholder="Created till"
-                  format={(value) => `To: ${value.format(dateDisplay)}`}
+                  format={(value) =>
+                    `Created till: ${value.format(dateDisplay)}`
+                  }
                 />
                 <DatePicker
                   allowClear
@@ -237,8 +197,46 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Updated"
-                  format={(value) => `Updated: ${value.format(dateDisplay)}`}
+                  placeholder="Updated from"
+                  format={(value) =>
+                    `Updated from: ${value.format(dateDisplay)}`
+                  }
+                />
+                <DatePicker
+                  allowClear
+                  value={
+                    appliedFilters.updatedAtEnd
+                      ? moment(appliedFilters.updatedAtEnd, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={(value) =>
+                    applyFilter(
+                      'updatedAtEnd',
+                      value ? value.format('YYYY-MM-DD') : null
+                    )
+                  }
+                  placeholder="Updated till"
+                  format={(value) =>
+                    `Updated till: ${value.format(dateDisplay)}`
+                  }
+                />
+                <DatePicker
+                  allowClear
+                  value={
+                    appliedFilters.nextFollowUpDate
+                      ? moment(appliedFilters.nextFollowUpDate, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={(value) =>
+                    applyFilter(
+                      'nextFollowUpDate',
+                      value ? value.format('YYYY-MM-DD') : null
+                    )
+                  }
+                  placeholder="Follow Up"
+                  format={(value) =>
+                    `Follow Up: ${value.format('MMM DD, YYYY')}`
+                  }
                 />
               </Col>
             </Row>
@@ -246,7 +244,7 @@ function Customer() {
               <Col xs={24} md={24}>
                 {customerData.customers ? (
                   <Row>
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={15}>
                       <Tooltip title="Sort By Name" placement="right">
                         <Button onClick={() => handleSort('name')}>
                           {queryData.sort.includes('name') ? (
@@ -275,8 +273,54 @@ function Customer() {
                           Sort By Updation
                         </Button>
                       </Tooltip>
+                      <LabelSelector
+                        onChange={(value) => {
+                          applyFilter('labels', value ? value.join(',') : null);
+                        }}
+                        value={
+                          appliedFilters.labels
+                            ? appliedFilters.labels.split(',')
+                            : []
+                        }
+                      />
+                      <OwnerSelector
+                        onChange={(value) => {
+                          applyFilter('owners', value ? value.join(',') : null);
+                        }}
+                        value={
+                          appliedFilters.owners
+                            ? appliedFilters.owners.split(',')
+                            : []
+                        }
+                      />
+                      <PlatformSelector
+                        value={
+                          appliedFilters.platforms
+                            ? appliedFilters.platforms.split(',')
+                            : []
+                        }
+                        onChange={(value) => {
+                          applyFilter(
+                            'platforms',
+                            value ? value.join(',') : null
+                          );
+                        }}
+                      />
+                      <Select
+                        placeholder="Platform Count"
+                        style={{ width: 150 }}
+                        allowClear
+                        onChange={(value) => {
+                          applyFilter('platformCount', value);
+                        }}
+                        value={appliedFilters.platformCount}
+                      >
+                        <Option value="SINGLE">Single</Option>
+                        <Option value="MULTIPLE">Multiple</Option>
+                        <Option value="NONE">None</Option>
+                      </Select>
                     </Col>
-                    <Col xs={24} md={12} style={{ textAlign: 'right' }}>
+                    <Col xs={24} md={9} style={{ textAlign: 'right' }}>
                       <Pagination
                         size="default"
                         showTotal={(total, range) =>
