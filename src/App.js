@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { ReactQueryDevtools } from 'react-query/devtools';
 import {
-  HashRouter as Router,
+  BrowserRouter as Router,
   Redirect,
   Route,
   Switch,
