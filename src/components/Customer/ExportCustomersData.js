@@ -54,6 +54,7 @@ function ExportCustomersData({ queryData }) {
       setExporting(false);
     } catch (error) {
       setExporting(false);
+      // eslint-disable-next-line no-console
       console.error(error.message);
       message.error('Something went wrong while exporting data!');
     }
