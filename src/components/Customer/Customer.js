@@ -137,7 +137,7 @@ function Customer() {
           </Col>
           <Col xs={24} md={12} style={{ paddingTop: '10px' }}>
             <Row gutter={10}>
-              <Col xs={18}>
+              <Col xs={24} md={18}>
                 <Search
                   placeholder="Search name, phone, client code, notes etc."
                   allowClear
@@ -146,7 +146,7 @@ function Customer() {
                   onSearch={handleSearch}
                 />
               </Col>
-              <Col xs={6}>
+              <Col xs={24} md={6} style={{ textAlign: 'center' }}>
                 <Button size="large" onClick={() => setShowFilterModal(true)}>
                   {filterCount ? <FilterTwoTone /> : <FilterOutlined />}
                   &nbsp; Filter &nbsp;
