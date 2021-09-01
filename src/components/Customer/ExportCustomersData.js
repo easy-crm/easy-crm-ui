@@ -63,7 +63,7 @@ function ExportCustomersData({ queryData }) {
   return (
     <Tooltip placement="bottom" title="Export complete data with filters">
       <Button
-        size="medium"
+        size="large"
         loading={exporting}
         onClick={handleExport}
         disabled={exporting}

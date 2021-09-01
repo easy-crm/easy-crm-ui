@@ -1,4 +1,6 @@
 import {
+  FilterOutlined,
+  FilterTwoTone,
   LoadingOutlined,
   SortAscendingOutlined,
   SortDescendingOutlined,
@@ -15,6 +17,9 @@ import {
   Tooltip,
   DatePicker,
   Result,
+  Modal,
+  Space,
+  Tag,
 } from 'antd';
 import React, { useState } from 'react';
 import moment from 'moment';
@@ -38,10 +43,14 @@ const { Option } = Select;
 
 function Customer() {
   const [queryData, setQueryData] = useState({
+    limit: 50,
+    offset: 0,
     sort: 'name|ascend',
     clientTZ: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
   const [appliedFilters, setAppliedFilters] = useState({});
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
   const {
     data: customerData,
     isLoading: loadingCustomers,
@@ -49,13 +58,10 @@ function Customer() {
     refetch,
   } = useCustomers(queryData);
 
-  // prefetch next page data
-  if (queryData.limit) {
-    usePrefetchCustomers({
-      ...queryData,
-      offset: queryData.offset + queryData.limit, // prefetch next page data
-    });
-  }
+  usePrefetchCustomers({
+    ...queryData,
+    offset: queryData.offset + queryData.limit, // prefetch next page data
+  });
 
   const handlePaginationChange = (page, pageSize) => {
     const updatedData = {
@@ -101,11 +107,21 @@ function Customer() {
     setQueryData(updatedQueryData);
   };
 
+  const clearFilters = () => {
+    const updatedQueryData = { ...queryData };
+    Object.keys(appliedFilters).forEach((filter) => {
+      delete updatedQueryData[filter];
+    });
+    setAppliedFilters({});
+    setQueryData(updatedQueryData);
+  };
+
   const handleCustomerDataChanges = () => {
     setQueryData({ ...queryData, sort: 'updatedAt|descend' });
     refetch();
   };
 
+  const filterCount = Object.keys(appliedFilters).length;
   return (
     <Spin spinning={loadingCustomers}>
       <div className="view-container">
@@ -119,37 +135,75 @@ function Customer() {
               />
             </Title>
           </Col>
+          <Col xs={24} md={12} style={{ paddingTop: '10px' }}>
+            <Row gutter={10}>
+              <Col xs={18}>
+                <Search
+                  placeholder="Search name, phone, client code, notes etc."
+                  allowClear
+                  enterButton="Search"
+                  size="large"
+                  onSearch={handleSearch}
+                />
+              </Col>
+              <Col xs={6}>
+                <Button size="large" onClick={() => setShowFilterModal(true)}>
+                  {filterCount ? <FilterTwoTone /> : <FilterOutlined />}
+                  &nbsp; Filter &nbsp;
+                  {filterCount ? (
+                    <Tag color="#FE7503">{filterCount}</Tag>
+                  ) : null}
+                </Button>
+              </Col>
+            </Row>
+          </Col>
           <Col
             xs={24}
-            md={14}
-            style={{ paddingTop: '10px', textAlign: 'right' }}
+            md={6}
+            style={{ paddingTop: '10px', textAlign: 'center' }}
           >
-            <Search
-              placeholder="Search name, phone, client code, notes etc."
-              allowClear
-              enterButton="Search"
-              size="medium"
-              onSearch={handleSearch}
-            />
+            <Space>
+              <AdminOnly>
+                <Space>
+                  <ExportCustomersData queryData={queryData} />
+                  <AddUpdateCustomer
+                    type="ADD"
+                    onChange={handleCustomerDataChanges}
+                  />
+                </Space>
+              </AdminOnly>
+            </Space>
           </Col>
-          <AdminOnly>
-            <Col
-              xs={24}
-              md={4}
-              style={{ paddingTop: '10px', textAlign: 'right' }}
-            >
-              <AddUpdateCustomer
-                type="ADD"
-                onChange={handleCustomerDataChanges}
-              />
-            </Col>
-          </AdminOnly>
         </Row>
-        {customerData ? (
-          <>
-            <Row>
-              <Col xs={24}>
+        <Modal
+          visible={showFilterModal}
+          width={800}
+          onCancel={() => setShowFilterModal(false)}
+          footer={
+            <Button onClick={() => setShowFilterModal(false)}>
+              Close Dialog
+            </Button>
+          }
+          title={
+            <h2>
+              {filterCount ? <FilterTwoTone /> : <FilterOutlined />}
+              &nbsp; Filter Customers &nbsp;
+              {filterCount ? (
+                <>
+                  <Tag color="#FE7503">{filterCount}</Tag> &nbsp;
+                  <Button onClick={clearFilters}>Clear All</Button>{' '}
+                </>
+              ) : null}
+            </h2>
+          }
+        >
+          <div
+            style={{ height: '60vh', overflowY: 'auto', overflowX: 'hidden' }}
+          >
+            <Row gutter={10}>
+              <Col xs={24} md={12}>
                 <DatePicker
+                  style={{ width: '100%' }}
                   allowClear
                   value={
                     appliedFilters.createdAtStart
@@ -162,12 +216,17 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Created from"
+                  placeholder="Created on/after"
                   format={(value) =>
-                    `Created from: ${value.format(dateDisplay)}`
+                    `Created on/after: ${value.format(dateDisplay)}`
                   }
                 />
+                <br />
+                <br />
+              </Col>
+              <Col xs={24} md={12}>
                 <DatePicker
+                  style={{ width: '100%' }}
                   allowClear
                   value={
                     appliedFilters.createdAtEnd
@@ -180,12 +239,17 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Created till"
+                  placeholder="Created on/before"
                   format={(value) =>
                     `Created till: ${value.format(dateDisplay)}`
                   }
                 />
+                <br />
+                <br />
+              </Col>
+              <Col xs={24} md={12}>
                 <DatePicker
+                  style={{ width: '100%' }}
                   allowClear
                   value={
                     appliedFilters.updatedAtStart
@@ -198,12 +262,15 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Updated from"
+                  placeholder="Last Updated on/after"
                   format={(value) =>
                     `Updated from: ${value.format(dateDisplay)}`
                   }
                 />
+              </Col>
+              <Col xs={24} md={12}>
                 <DatePicker
+                  style={{ width: '100%' }}
                   allowClear
                   value={
                     appliedFilters.updatedAtEnd
@@ -216,12 +283,49 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Updated till"
+                  placeholder="Last Updated on/before"
                   format={(value) =>
-                    `Updated till: ${value.format(dateDisplay)}`
+                    `Last Updated on/before: ${value.format(dateDisplay)}`
                   }
                 />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col xs={24}>
+                <PlatformSelector
+                  width="100%"
+                  value={
+                    appliedFilters.platforms
+                      ? appliedFilters.platforms.split(',')
+                      : []
+                  }
+                  onChange={(value) => {
+                    applyFilter('platforms', value ? value.join(',') : null);
+                  }}
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row gutter={10}>
+              <Col xs={24} md={12}>
+                <Select
+                  placeholder="Platform Count"
+                  style={{ width: '100%' }}
+                  allowClear
+                  onChange={(value) => {
+                    applyFilter('platformCount', value);
+                  }}
+                  value={appliedFilters.platformCount}
+                >
+                  <Option value="SINGLE">Single</Option>
+                  <Option value="MULTIPLE">Multiple</Option>
+                  <Option value="NONE">None</Option>
+                </Select>
+              </Col>
+              <Col xs={24} md={12}>
                 <DatePicker
+                  style={{ width: '100%' }}
                   allowClear
                   value={
                     appliedFilters.nextFollowUpDate
@@ -234,21 +338,60 @@ function Customer() {
                       value ? value.format('YYYY-MM-DD') : null
                     )
                   }
-                  placeholder="Follow Up"
+                  placeholder="Next Follow Up"
                   format={(value) =>
-                    `Follow Up: ${value.format('MMM DD, YYYY')}`
+                    `Next Follow Up: ${value.format('MMM DD, YYYY')}`
                   }
                 />
-                <AdminOnly>
-                  <ExportCustomersData queryData={queryData} />
-                </AdminOnly>
               </Col>
             </Row>
+            <br />
+            <Row>
+              <Col xs={24}>
+                <OwnerSelector
+                  width="100%"
+                  onChange={(value) => {
+                    applyFilter('owners', value ? value.join(',') : null);
+                  }}
+                  value={
+                    appliedFilters.owners
+                      ? appliedFilters.owners.split(',')
+                      : []
+                  }
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col xs={24}>
+                <LabelSelector
+                  width="100%"
+                  onChange={(value) => {
+                    applyFilter('labels', value ? value.join(',') : null);
+                  }}
+                  value={
+                    appliedFilters.labels
+                      ? appliedFilters.labels.split(',')
+                      : []
+                  }
+                />
+              </Col>
+            </Row>
+            <br />
+          </div>
+        </Modal>
+
+        {customerData ? (
+          <>
             <Row>
               <Col xs={24} md={24}>
                 {customerData.customers ? (
                   <Row>
-                    <Col xs={24} md={15}>
+                    <Col
+                      xs={24}
+                      md={6}
+                      style={{ paddingTop: '5px', textAlign: 'center' }}
+                    >
                       <Tooltip title="Sort By Name" placement="right">
                         <Button onClick={() => handleSort('name')}>
                           {queryData.sort.includes('name') ? (
@@ -274,57 +417,11 @@ function Customer() {
                               )}
                             </span>
                           ) : null}
-                          Sort By Updation
+                          Sort By Updates
                         </Button>
                       </Tooltip>
-                      <LabelSelector
-                        onChange={(value) => {
-                          applyFilter('labels', value ? value.join(',') : null);
-                        }}
-                        value={
-                          appliedFilters.labels
-                            ? appliedFilters.labels.split(',')
-                            : []
-                        }
-                      />
-                      <OwnerSelector
-                        onChange={(value) => {
-                          applyFilter('owners', value ? value.join(',') : null);
-                        }}
-                        value={
-                          appliedFilters.owners
-                            ? appliedFilters.owners.split(',')
-                            : []
-                        }
-                      />
-                      <PlatformSelector
-                        value={
-                          appliedFilters.platforms
-                            ? appliedFilters.platforms.split(',')
-                            : []
-                        }
-                        onChange={(value) => {
-                          applyFilter(
-                            'platforms',
-                            value ? value.join(',') : null
-                          );
-                        }}
-                      />
-                      <Select
-                        placeholder="Platform Count"
-                        style={{ width: 150 }}
-                        allowClear
-                        onChange={(value) => {
-                          applyFilter('platformCount', value);
-                        }}
-                        value={appliedFilters.platformCount}
-                      >
-                        <Option value="SINGLE">Single</Option>
-                        <Option value="MULTIPLE">Multiple</Option>
-                        <Option value="NONE">None</Option>
-                      </Select>
                     </Col>
-                    <Col xs={24} md={9} style={{ textAlign: 'right' }}>
+                    <Col xs={24} md={18} style={{ textAlign: 'right' }}>
                       <Pagination
                         size="default"
                         showTotal={(total, range) =>

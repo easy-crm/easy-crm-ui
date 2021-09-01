@@ -144,14 +144,18 @@ function AddUpdateCustomer({
   };
 
   const validateInputs = () => {
-    const { name, phone, platformInfo } = customerInfo;
+    const { name, phone, platformInfo, alternatePhone } = customerInfo;
 
     if (!name.trim().length) {
       message.error('Please provide a valid Name!');
       return false;
     }
-    if (!phone.trim().length) {
-      message.error('Please provide a valid Phone!');
+    if (!phone.trim().length || phone.length !== 10) {
+      message.error('Please provide a valid Contact Number!');
+      return false;
+    }
+    if (alternatePhone && alternatePhone.length !== 10) {
+      message.error('Please provide a valid alternate contact number!');
       return false;
     }
 
@@ -248,7 +252,7 @@ function AddUpdateCustomer({
         }
         value={customerInfo.phone}
         onChange={(e) =>
-          setCustomerInfo({ ...customerInfo, phone: e.target.value })
+          setCustomerInfo({ ...customerInfo, phone: e.target.value.trim() })
         }
       />
       <br />
@@ -262,7 +266,7 @@ function AddUpdateCustomer({
         onChange={(e) =>
           setCustomerInfo({
             ...customerInfo,
-            alternatePhone: e.target.value,
+            alternatePhone: e.target.value.trim(),
           })
         }
       />
@@ -275,7 +279,7 @@ function AddUpdateCustomer({
         prefix={<CustomInputLabel text="Email" icon={<MailTwoTone />} />}
         value={customerInfo.email}
         onChange={(e) =>
-          setCustomerInfo({ ...customerInfo, email: e.target.value })
+          setCustomerInfo({ ...customerInfo, email: e.target.value.trim() })
         }
       />
       <br />
@@ -451,6 +455,7 @@ function AddUpdateCustomer({
   return (
     <>
       <Button
+        size={type === 'ADD' ? 'large' : null}
         type={type === 'ADD' ? 'primary' : 'secondary'}
         onClick={() => setShowModal(true)}
       >
