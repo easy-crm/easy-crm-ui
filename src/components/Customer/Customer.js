@@ -45,7 +45,7 @@ function Customer() {
   const [queryData, setQueryData] = useState({
     limit: 50,
     offset: 0,
-    sort: 'name|ascend',
+    sort: 'updatedAt|descend',
     clientTZ: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
   const [appliedFilters, setAppliedFilters] = useState({});
@@ -384,16 +384,24 @@ function Customer() {
         {customerData ? (
           <>
             <Row>
-              <Col xs={24} md={24}>
+              <Col xs={24}>
                 {customerData.customers ? (
                   <Row>
                     <Col
                       xs={24}
-                      md={6}
+                      md={4}
                       style={{ paddingTop: '5px', textAlign: 'center' }}
                     >
                       <Tooltip title="Sort By Name" placement="right">
-                        <Button onClick={() => handleSort('name')}>
+                        <Button
+                          onClick={() => handleSort('name')}
+                          ghost={queryData.sort.includes('name')}
+                          type={
+                            queryData.sort.includes('name')
+                              ? 'primary'
+                              : 'default'
+                          }
+                        >
                           {queryData.sort.includes('name') ? (
                             <span>
                               {queryData.sort.split('|')[1] === 'ascend' ? (
@@ -407,7 +415,15 @@ function Customer() {
                         </Button>
                       </Tooltip>
                       <Tooltip title="Sort By Updation" placement="right">
-                        <Button onClick={() => handleSort('updatedAt')}>
+                        <Button
+                          ghost={queryData.sort.includes('updatedAt')}
+                          type={
+                            queryData.sort.includes('updatedAt')
+                              ? 'primary'
+                              : 'default'
+                          }
+                          onClick={() => handleSort('updatedAt')}
+                        >
                           {queryData.sort.includes('updatedAt') ? (
                             <span>
                               {queryData.sort.split('|')[1] === 'ascend' ? (
@@ -421,19 +437,38 @@ function Customer() {
                         </Button>
                       </Tooltip>
                     </Col>
-                    <Col xs={24} md={18} style={{ textAlign: 'right' }}>
-                      <Pagination
-                        size="default"
-                        showTotal={(total, range) =>
-                          `${range[0]}-${range[1]} of ${total} customers`
+                    <Col
+                      xs={24}
+                      md={8}
+                      style={{ paddingTop: '5px', textAlign: 'center' }}
+                    >
+                      <OwnerSelector
+                        width="100%"
+                        onChange={(value) => {
+                          applyFilter('owners', value ? value.join(',') : null);
+                        }}
+                        value={
+                          appliedFilters.owners
+                            ? appliedFilters.owners.split(',')
+                            : []
                         }
-                        showSizeChanger
-                        pageSizeOptions={[5, 10, 50, 100]}
-                        defaultCurrent={1}
-                        defaultPageSize={customerData.limit}
-                        total={customerData.totalRecords}
-                        onChange={handlePaginationChange}
                       />
+                    </Col>
+                    <Col xs={24} md={12} style={{ textAlign: 'right' }}>
+                      {customerData.totalRecords ? (
+                        <Pagination
+                          size="default"
+                          showTotal={(total, range) =>
+                            `${range[0]}-${range[1]} of ${total} customers`
+                          }
+                          showSizeChanger
+                          pageSizeOptions={[5, 10, 50, 100]}
+                          defaultCurrent={1}
+                          defaultPageSize={customerData.limit}
+                          total={customerData.totalRecords}
+                          onChange={handlePaginationChange}
+                        />
+                      ) : null}
                     </Col>
                   </Row>
                 ) : null}
