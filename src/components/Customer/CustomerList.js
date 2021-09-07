@@ -6,6 +6,7 @@ import moment from 'moment';
 import {
   getAvatarUrlFromName,
   shortenDisplayString,
+  stringToColour,
 } from '../../util/stringUtils';
 import { DISPLAY_DATE_FORMAT } from '../../util/constants';
 import AddUpdateCustomer from './AddUpdateCustomer';
@@ -83,13 +84,6 @@ function CustomerList({ customers, onChange = () => {} }) {
                     ))}
                   </Col>
                   <Col xs={24} md={7} style={{ paddingTop: '10px' }}>
-                    {labels.map((label) => (
-                      <Tag key={label.text} color={label.color}>
-                        <strong>{label.text}</strong>
-                      </Tag>
-                    ))}
-                    <br />
-                    <br />
                     <Tooltip
                       title={
                         <span>
@@ -99,10 +93,27 @@ function CustomerList({ customers, onChange = () => {} }) {
                         </span>
                       }
                     >
-                      <Tag>{owner.name}</Tag>
+                      <Tag
+                        style={{
+                          fontSize: '15px',
+                          padding: '2px',
+                          border: `solid 1px #${stringToColour(owner.name)}`,
+                          color: `#${stringToColour(owner.name)}`,
+                        }}
+                      >
+                        <strong>{owner.name}</strong>
+                      </Tag>
                     </Tooltip>
                     <br />
                     <br />
+                    {labels.map((label) => (
+                      <Tag key={label.text} color={label.color}>
+                        <strong>{label.text}</strong>
+                      </Tag>
+                    ))}
+                    <br />
+                    <br />
+
                     {nextFollowUpDate ? (
                       <Tag>
                         <strong>

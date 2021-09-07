@@ -6,7 +6,7 @@ const getQueryStringFromObject = (obj) => {
 };
 
 const stringToColour = (str) => {
-  const text = `random${str}`;
+  const text = `random${str}random`;
   let hash = 0;
   for (let i = 0; i < text.length; i += 1) {
     hash = text.charCodeAt(i) + ((hash << 5) - hash);
