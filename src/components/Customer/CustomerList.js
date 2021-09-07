@@ -35,6 +35,7 @@ function CustomerList({ customers, onChange = () => {} }) {
           labels,
           platformInfo = [],
           nextFollowUpDate,
+          owner = {},
         } = customer;
         const [latestNote] = notes;
         return (
@@ -87,6 +88,19 @@ function CustomerList({ customers, onChange = () => {} }) {
                         <strong>{label.text}</strong>
                       </Tag>
                     ))}
+                    <br />
+                    <br />
+                    <Tooltip
+                      title={
+                        <span>
+                          Owner: {owner.name}
+                          <br />
+                          {owner.email}
+                        </span>
+                      }
+                    >
+                      <Tag>{owner.name}</Tag>
+                    </Tooltip>
                     <br />
                     <br />
                     {nextFollowUpDate ? (

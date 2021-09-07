@@ -389,7 +389,7 @@ function Customer() {
                   <Row>
                     <Col
                       xs={24}
-                      md={4}
+                      md={6}
                       style={{ paddingTop: '5px', textAlign: 'center' }}
                     >
                       <Tooltip title="Sort By Name" placement="right">
@@ -437,7 +437,7 @@ function Customer() {
                         </Button>
                       </Tooltip>
                     </Col>
-                    <Col
+                    {/* <Col
                       xs={24}
                       md={8}
                       style={{ paddingTop: '5px', textAlign: 'center' }}
@@ -453,8 +453,8 @@ function Customer() {
                             : []
                         }
                       />
-                    </Col>
-                    <Col xs={24} md={12} style={{ textAlign: 'right' }}>
+                    </Col> */}
+                    <Col xs={24} md={18} style={{ textAlign: 'right' }}>
                       {customerData.totalRecords ? (
                         <Pagination
                           size="default"
