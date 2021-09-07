@@ -19,11 +19,14 @@ function UserStatus() {
   );
 
   const formatDateTime = (input) => {
-    return DateTime.fromISO(input, {
-      zone: 'utc',
-    })
-      .setZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
-      .toFormat(`${DISPLAY_DATE_FORMAT} hh:mm a`);
+    if (input) {
+      return DateTime.fromISO(input, {
+        zone: 'utc',
+      })
+        .setZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+        .toFormat(`${DISPLAY_DATE_FORMAT} hh:mm a`);
+    }
+    return input;
   };
   return (
     <div style={{ color: 'white', height: '30vh', overflowY: 'auto' }}>
