@@ -1,6 +1,7 @@
 import { CloudDownloadOutlined } from '@ant-design/icons';
 import { Button, message, Tooltip } from 'antd';
 import exportFromJSON from 'export-from-json';
+import { DateTime } from 'luxon';
 import moment from 'moment';
 
 import React, { useState } from 'react';
@@ -25,6 +26,7 @@ function ExportCustomersData({ queryData }) {
             platformInfo = [],
             labels = [],
             owner,
+            notes = [],
           } = record;
           const platforms = {};
           platformInfo.forEach((info) => {
@@ -40,6 +42,14 @@ function ExportCustomersData({ queryData }) {
             LABELS: labels.map((label) => label.text).join(),
             OWNER: owner.name,
           };
+
+          notes.forEach(({ text, addedBy: { name: addedByName }, addedAt }) => {
+            const key = DateTime.fromISO(addedAt, {
+              zone: 'utc',
+            }).toFormat('LLL dd yyyy | hh:mm a');
+            row[key] = `${addedByName}: ${text}`;
+          });
+
           data.push(row);
         });
         exportFromJSON({
