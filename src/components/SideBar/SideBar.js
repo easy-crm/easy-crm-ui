@@ -2,6 +2,8 @@ import React from 'react';
 import { Layout } from 'antd';
 import './SideBar.css';
 
+import UserStatus from '../UserStatus/UserStatus';
+
 const SideBar = ({ menu }) => {
   return (
     <Layout.Sider
@@ -12,6 +14,7 @@ const SideBar = ({ menu }) => {
       trigger={null}
     >
       {menu}
+      <UserStatus />
     </Layout.Sider>
   );
 };

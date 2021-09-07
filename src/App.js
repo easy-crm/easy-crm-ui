@@ -20,6 +20,8 @@ import Platforms from './components/Config/Platforms';
 import Labels from './components/Config/Labels';
 import Protected from './components/Auth/Protected';
 import { UserInfoProvider } from './context/UserInfoContext';
+import { SocketProvider } from './context/SocketContext';
+import { LoggedInUsersProvider } from './context/LoggedinUsersContext';
 // this will handle 401, 403, 500 errors globally for all axios http calls
 registerAxiosErrorInterceptor();
 
@@ -38,40 +40,44 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserInfoProvider>
-        <Protected>
-          <Router>
-            <div className="App">
-              <NavBar theme="dark" menu={<NavMenu />} />
-              <Layout>
-                <SideBar theme="dark" menu={<NavMenu />} />
-                <Layout.Content className="content">
-                  <Switch>
-                    <Route exact path="/">
-                      <Redirect to="/customers" />
-                    </Route>
-                    <Route path="/customers">
-                      <Customer />
-                    </Route>
-                    <Route path="/agents">
-                      <Agents />
-                    </Route>
-                    <Route path="/admins">
-                      <Admins />
-                    </Route>
-                    <Route path="/platforms">
-                      <Platforms />
-                    </Route>
-                    <Route path="/labels">
-                      <Labels />
-                    </Route>
-                  </Switch>
-                </Layout.Content>
-              </Layout>
-            </div>
-          </Router>
-        </Protected>
-      </UserInfoProvider>
+      <SocketProvider>
+        <LoggedInUsersProvider>
+          <UserInfoProvider>
+            <Protected>
+              <Router>
+                <div className="App">
+                  <NavBar theme="dark" menu={<NavMenu />} />
+                  <Layout>
+                    <SideBar theme="dark" menu={<NavMenu />} />
+                    <Layout.Content className="content">
+                      <Switch>
+                        <Route exact path="/">
+                          <Redirect to="/customers" />
+                        </Route>
+                        <Route path="/customers">
+                          <Customer />
+                        </Route>
+                        <Route path="/agents">
+                          <Agents />
+                        </Route>
+                        <Route path="/admins">
+                          <Admins />
+                        </Route>
+                        <Route path="/platforms">
+                          <Platforms />
+                        </Route>
+                        <Route path="/labels">
+                          <Labels />
+                        </Route>
+                      </Switch>
+                    </Layout.Content>
+                  </Layout>
+                </div>
+              </Router>
+            </Protected>
+          </UserInfoProvider>
+        </LoggedInUsersProvider>
+      </SocketProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
