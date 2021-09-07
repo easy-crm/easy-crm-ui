@@ -26,7 +26,7 @@ function UserStatus() {
       .toFormat(`${DISPLAY_DATE_FORMAT} hh:mm a`);
   };
   return (
-    <div style={{ color: 'white' }}>
+    <div style={{ color: 'white', height: '30vh', overflowY: 'auto' }}>
       <Row
         justify="center"
         style={{

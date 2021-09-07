@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../logo.png';
 import AuthInfo from '../Auth/AuthInfo';
 import Logout from '../Auth/Logout';
+import UserStatus from '../UserStatus/UserStatus';
 
 const NavBar = ({ menu }) => {
   const [visible, setVisible] = useState(false);
@@ -24,6 +25,7 @@ const NavBar = ({ menu }) => {
       >
         <AuthInfo />
         {menu}
+        <UserStatus />
       </Drawer>
       <Row>
         <Col xs={2} md={0}>
