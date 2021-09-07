@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Popover, Row } from 'antd';
+import { Col, Popover, Row } from 'antd';
 
 import { DateTime } from 'luxon';
 import { LoggedInUsersContext } from '../../context/LoggedinUsersContext';
@@ -41,9 +41,8 @@ function UserStatus() {
         USERS
       </Row>
       <Row style={{ paddingLeft: '15px' }}>
-        <br />
         {otherUsers.map((user) => (
-          <div key={user.email}>
+          <Col xs={24} key={user.email}>
             {user.inactiveSince ? (
               <Popover
                 title="Away"
@@ -71,7 +70,7 @@ function UserStatus() {
                 {user.name}
               </Popover>
             )}
-          </div>
+          </Col>
         ))}
       </Row>
     </div>
