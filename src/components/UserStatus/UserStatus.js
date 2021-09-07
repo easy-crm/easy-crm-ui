@@ -40,7 +40,7 @@ function UserStatus() {
       >
         USERS
       </Row>
-      <Row justify="center">
+      <Row style={{ paddingLeft: '15px' }}>
         <br />
         {otherUsers.map((user) => (
           <div key={user.email}>
