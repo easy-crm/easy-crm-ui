@@ -6,6 +6,7 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
 import { getConfig } from './config';
 import history from './util/history';
+import NetworkStatus from './components/helpers/NetworkStatus';
 
 const onRedirectCallback = (appState) => {
   history.push(
@@ -28,6 +29,7 @@ const providerConfig = {
 ReactDOM.render(
   <React.StrictMode>
     <Auth0Provider {...providerConfig}>
+      <NetworkStatus />
       <App />
     </Auth0Provider>
   </React.StrictMode>,
