@@ -150,7 +150,6 @@ function AddUpdateCustomer({
       message.error('Please provide a valid Name!');
       return false;
     }
-    console.log({ phone });
     if (!phone.trim().length || phone.length !== 10) {
       message.error('Please provide a valid Contact Number!');
       return false;
