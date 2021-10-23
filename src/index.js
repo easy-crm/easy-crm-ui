@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from './App';
 import { getConfig } from './config';
 import history from './util/history';
 import NetworkStatus from './components/helpers/NetworkStatus';
+
+import './index.css';
 
 const onRedirectCallback = (appState) => {
   history.push(

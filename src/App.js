@@ -28,7 +28,7 @@ registerAxiosErrorInterceptor();
 document.addEventListener(
   'contextmenu',
   (e) => {
-    if (process.env.REACT_APP_MODE !== 'dev') {
+    if (process.env.MODE !== 'dev') {
       e.preventDefault();
     }
   },

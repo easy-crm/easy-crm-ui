@@ -1,7 +1,7 @@
 const configJson = {
-  domain: process.env.REACT_APP_AUTH0_DOMAIN,
-  clientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
-  audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+  domain: process.env.AUTH0_DOMAIN,
+  clientId: process.env.AUTH0_CLIENT_ID,
+  audience: process.env.AUTH0_AUDIENCE,
   scope: 'read:current_user update:current_user_metadata',
 };
 
