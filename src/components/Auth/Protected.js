@@ -67,7 +67,7 @@ function Protected({ children }) {
               email: user.email,
               accessToken,
             });
-            const sock = io.connect(process.env.REACT_APP_EASY_CRM_API_BASE, {
+            const sock = io.connect(process.env.EASY_CRM_API_BASE, {
               query: `user=${JSON.stringify({
                 email: user.email,
                 name: isAdmin.name,
@@ -85,7 +85,7 @@ function Protected({ children }) {
               email: user.email,
               accessToken,
             });
-            const sock = io.connect(process.env.REACT_APP_EASY_CRM_API_BASE, {
+            const sock = io.connect(process.env.EASY_CRM_API_BASE, {
               query: `user=${JSON.stringify({
                 email: user.email,
                 name: isAgent.name,
