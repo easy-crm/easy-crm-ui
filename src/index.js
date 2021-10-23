@@ -8,7 +8,6 @@ import { getConfig } from './config';
 import history from './util/history';
 import NetworkStatus from './components/helpers/NetworkStatus';
 
-import 'antd/dist/antd.css';
 import './index.css';
 
 const onRedirectCallback = (appState) => {
