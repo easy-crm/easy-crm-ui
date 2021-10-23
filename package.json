@@ -5,53 +5,31 @@
   "dependencies": {
     "@ant-design/icons": "^4.6.3",
     "@auth0/auth0-react": "^1.6.0",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
     "antd": "^4.16.13",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "export-from-json": "^1.4.0",
     "history": "^5.0.1",
     "idle-js": "^1.2.0",
     "lodash": "^4.17.21",
     "luxon": "^2.0.2",
     "moment": "^2.29.1",
+    "parcel": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.21.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "socket.io-client": "^4.2.0",
-    "web-vitals": "^1.1.2"
+    "socket.io-client": "^4.2.0"
   },
   "scripts": {
     "lint": "eslint ./",
     "lint-fix": "eslint ./ --fix",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "start": "parcel ./public/index.html --open -p 3000",
+    "build": "parcel build ./public/index.html"
   },
   "devDependencies": {
+    "@parcel/packager-raw-url": "^2.0.0",
+    "@parcel/transformer-webmanifest": "^2.0.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
